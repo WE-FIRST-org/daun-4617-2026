@@ -47,6 +47,11 @@ public final class Constants {
     public static final double SPIN_UP_SECONDS = 1;
   }
 
+  public static final class VisionConstants {
+    // VISION CONSTANTS
+    public static final String USB_CAMERA_NAME = "USB_Camera-10.48.14.5"; //VisionSubsystem.java MIT License text there
+  }
+
   public static final class OperatorConstants {
     // Port constants for driver and operator controllers. These should match the
     // values in the Joystick tab of the Driver Station software
