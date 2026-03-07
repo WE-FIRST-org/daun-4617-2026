@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.*;
 import frc.robot.commands.Drive;
@@ -30,7 +31,7 @@ public class RobotContainer {
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
 
   // The driver's controller
-  private final CommandXboxController driverController = new CommandXboxController(
+  private final CommandPS4Controller driverController = new CommandPS4Controller(
       DRIVER_CONTROLLER_PORT);
 
   // The operator's controller
