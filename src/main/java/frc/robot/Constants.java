@@ -28,27 +28,27 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY_RPS = Math.PI * 2; // radians/sec
 
     // ── Front Left Module ──────────────────────────────────────────────────
-    public static final int FL_DRIVE_ID    = 1; // FIXME: SparkFlex CAN ID
-    public static final int FL_STEER_ID    = 2; // FIXME: SparkFlex CAN ID
-    public static final int FL_ENCODER_ID  = 0; // FIXME: CANCoder CAN ID
+    public static final int FL_DRIVE_ID    = 10;
+    public static final int FL_STEER_ID    = 11;
+    public static final int FL_ENCODER_ID  = 2;
     public static final double FL_STEER_OFFSET = 0.0; // FIXME: radians, calibrate after build
 
     // ── Front Right Module ─────────────────────────────────────────────────
-    public static final int FR_DRIVE_ID    = 3; // FIXME: SparkFlex CAN ID
-    public static final int FR_STEER_ID    = 4; // FIXME: SparkFlex CAN ID
-    public static final int FR_ENCODER_ID  = 1; // FIXME: CANCoder CAN ID
+    public static final int FR_DRIVE_ID    = 3;
+    public static final int FR_STEER_ID    = 7;
+    public static final int FR_ENCODER_ID  = 9;
     public static final double FR_STEER_OFFSET = 0.0; // FIXME
 
     // ── Back Left Module ───────────────────────────────────────────────────
-    public static final int BL_DRIVE_ID    = 5; // FIXME: SparkFlex CAN ID
-    public static final int BL_STEER_ID    = 6; // FIXME: SparkFlex CAN ID
-    public static final int BL_ENCODER_ID  = 2; // FIXME: CANCoder CAN ID
+    public static final int BL_DRIVE_ID    = 62;
+    public static final int BL_STEER_ID    = 61;
+    public static final int BL_ENCODER_ID  = 8;
     public static final double BL_STEER_OFFSET = 0.0; // FIXME
 
     // ── Back Right Module ──────────────────────────────────────────────────
-    public static final int BR_DRIVE_ID    = 7; // FIXME: SparkFlex CAN ID
-    public static final int BR_STEER_ID    = 8; // FIXME: SparkFlex CAN ID
-    public static final int BR_ENCODER_ID  = 3; // FIXME: CANCoder CAN ID
+    public static final int BR_DRIVE_ID    = 4;
+    public static final int BR_STEER_ID    = 6;
+    public static final int BR_ENCODER_ID  = 12;
     public static final double BR_STEER_OFFSET = 0.0; // FIXME
 
     // ── Mk4i Physical Specs ────────────────────────────────────────────────
