@@ -31,25 +31,25 @@ public final class Constants {
     public static final int FL_DRIVE_ID    = 10;
     public static final int FL_STEER_ID    = 11;
     public static final int FL_ENCODER_ID  = 2;
-    public static final double FL_STEER_OFFSET = 0.0; // FIXME: radians, calibrate after build
+    public static final double FL_STEER_OFFSET = 0.13623046875; 
 
     // ── Front Right Module ─────────────────────────────────────────────────
     public static final int FR_DRIVE_ID    = 3;
     public static final int FR_STEER_ID    = 7;
     public static final int FR_ENCODER_ID  = 9;
-    public static final double FR_STEER_OFFSET = 0.0; // FIXME
+    public static final double FR_STEER_OFFSET = -0.181640625;
 
     // ── Back Left Module ───────────────────────────────────────────────────
     public static final int BL_DRIVE_ID    = 62;
     public static final int BL_STEER_ID    = 61;
     public static final int BL_ENCODER_ID  = 8;
-    public static final double BL_STEER_OFFSET = 0.0; // FIXME
+    public static final double BL_STEER_OFFSET = 0.04296875; 
 
     // ── Back Right Module ──────────────────────────────────────────────────
     public static final int BR_DRIVE_ID    = 4;
     public static final int BR_STEER_ID    = 6;
     public static final int BR_ENCODER_ID  = 12;
-    public static final double BR_STEER_OFFSET = 0.0; // FIXME
+    public static final double BR_STEER_OFFSET = -0.34716796875;
 
     // ── Mk4i Physical Specs ────────────────────────────────────────────────
     // Drive gear ratio: L1=8.14, L2=6.75 (default), L3=6.12
@@ -80,8 +80,8 @@ public final class Constants {
 
   public static final class FuelConstants {
     // Motor controller IDs for Fuel Mechanism motors
-    public static final int FEEDER_MOTOR_ID = 6;
-    public static final int INTAKE_LAUNCHER_MOTOR_ID = 5;
+    public static final int FEEDER_MOTOR_ID = 14;
+    public static final int INTAKE_LAUNCHER_MOTOR_ID = 15;
 
     // Current limit and nominal voltage for fuel mechanism motors.
     public static final int FEEDER_MOTOR_CURRENT_LIMIT = 60;

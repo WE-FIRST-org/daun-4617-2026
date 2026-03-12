@@ -1,6 +1,6 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.sensors.PigeonIMU;
+// import com.ctre.phoenix.sensors.PigeonIMU;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,7 +37,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     );
 
     // ── Gyroscope ─────────────────────────────────────────────────────────
-    private final PigeonIMU m_pigeon = new PigeonIMU(PIGEON_ID);
+    // private final PigeonIMU m_pigeon = new PigeonIMU(PIGEON_ID);
 
     // ── Modules ───────────────────────────────────────────────────────────
     // driveInverted: FL and BL are typically inverted on SDS modules — verify on your robot
@@ -90,12 +90,13 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     /** Resets the Pigeon yaw to zero so the current heading is treated as "forward." */
     public void zeroGyroscope() {
-        m_pigeon.setYaw(0.0);
+        // m_pigeon.setYaw(0.0);
     }
 
     /** Returns the robot's current heading as a {@link Rotation2d}. */
     public Rotation2d getGyroscopeRotation() {
-        return Rotation2d.fromDegrees(m_pigeon.getYaw());
+        // return Rotation2d.fromDegrees(m_pigeon.getYaw());
+        return Rotation2d.fromDegrees(0);
     }
 
     /** Returns the robot's estimated pose on the field. */
@@ -115,7 +116,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         m_odometry.update(getGyroscopeRotation(), getModulePositions());
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
-        SmartDashboard.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
+        // SmartDashboard.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
         SmartDashboard.putString("Robot Pose", m_odometry.getPoseMeters().toString());
     }
 
