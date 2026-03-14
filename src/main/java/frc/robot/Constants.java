@@ -16,21 +16,70 @@ package frc.robot;
  */
 public final class Constants {
   public static final class DriveConstants {
-    // Motor controller IDs for drivetrain motors
-    public static final int LEFT_LEADER_ID = 1;
-    public static final int LEFT_FOLLOWER_ID = 3;
-    public static final int RIGHT_LEADER_ID = 2;
-    public static final int RIGHT_FOLLOWER_ID = 4;
+    // Robot geometry — measure center-to-center of wheels on your actual robot
+    public static final double TRACKWIDTH_METERS = 0.5969; // measure left-to-right (~23.5 in)
+    public static final double WHEELBASE_METERS  = 0.5969; // measure front-to-back (~23.5 in)
 
-    // Current limit for drivetrain motors. 60A is a reasonable maximum to reduce
-    // likelihood of tripping breakers or damaging CIM motors
+    // Pigeon V1 CAN ID
+    public static final int PIGEON_ID = 0; // FIXME: set actual CAN ID
+
+    // Maximum robot speeds — tune after mechanical validation
+    public static final double MAX_VELOCITY_MPS = 0.5;            // meters/sec (L2 Mk4i + Neo Vortex) (4.5)
+    public static final double MAX_ANGULAR_VELOCITY_RPS = 0.5; // radians/sec  (Math.PI * 2)
+
+    // ── Front Left Module ──────────────────────────────────────────────────
+    public static final int FL_DRIVE_ID    = 10;
+    public static final int FL_STEER_ID    = 11;
+    public static final int FL_ENCODER_ID  = 2;
+    public static final double FL_STEER_OFFSET = 0.13623046875; 
+
+    // ── Front Right Module ─────────────────────────────────────────────────
+    public static final int FR_DRIVE_ID    = 3;
+    public static final int FR_STEER_ID    = 7;
+    public static final int FR_ENCODER_ID  = 9;
+    public static final double FR_STEER_OFFSET = -0.181640625;
+
+    // ── Back Left Module ───────────────────────────────────────────────────
+    public static final int BL_DRIVE_ID    = 62;
+    public static final int BL_STEER_ID    = 61;
+    public static final int BL_ENCODER_ID  = 8;
+    public static final double BL_STEER_OFFSET = 0.04296875; 
+
+    // ── Back Right Module ──────────────────────────────────────────────────
+    public static final int BR_DRIVE_ID    = 4;
+    public static final int BR_STEER_ID    = 6;
+    public static final int BR_ENCODER_ID  = 12;
+    public static final double BR_STEER_OFFSET = -0.34716796875;
+
+    // ── Mk4i Physical Specs ────────────────────────────────────────────────
+    // Drive gear ratio: L1=8.14, L2=6.75 (default), L3=6.12
+    public static final double DRIVE_GEAR_RATIO  = 6.75;           // FIXME: match your Mk4i L-ratio
+    public static final double STEER_GEAR_RATIO  = 150.0 / 7.0;   // 21.43:1, fixed for all Mk4i
+    public static final double WHEEL_DIAMETER_METERS = 0.1016;     // 4 inches
+
+    // SparkFlex encoder conversion factors
+    public static final double DRIVE_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;  // meters per motor rotation
+    public static final double DRIVE_ENCODER_VELOCITY_FACTOR = DRIVE_ENCODER_POSITION_FACTOR / 60.0;// m/s per RPM
+
+    public static final double STEER_ENCODER_POSITION_FACTOR =
+        (2 * Math.PI) / STEER_GEAR_RATIO;   // radians per motor rotation
+    public static final double STEER_ENCODER_VELOCITY_FACTOR =
+        STEER_ENCODER_POSITION_FACTOR / 60.0; // rad/s per RPM
+
+    // Steer PID gains (tune on robot)
+    public static final double STEER_P = 1.0;
+    public static final double STEER_I = 0.0;
+    public static final double STEER_D = 0.0;
+
+    // Current limits
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 60;
+    public static final int STEER_MOTOR_CURRENT_LIMIT = 20;
   }
 
   public static final class FuelConstants {
     // Motor controller IDs for Fuel Mechanism motors
-    public static final int FEEDER_MOTOR_ID = 6;
-    public static final int INTAKE_LAUNCHER_MOTOR_ID = 5;
+    public static final int FEEDER_MOTOR_ID = 14;
+    public static final int INTAKE_LAUNCHER_MOTOR_ID = 15;
 
     // Current limit and nominal voltage for fuel mechanism motors.
     public static final int FEEDER_MOTOR_CURRENT_LIMIT = 60;

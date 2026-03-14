@@ -31,7 +31,7 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.VisionConstants.*;
@@ -48,7 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
         // if (hasTarget) {
         //     this.result = result;
         // }
-        // InRange(0, 5, 0, 5); // Put to SmartDashboard whether or not the target is in range
+        // Elastic.putBoolean("InRange", InRange(0, 5, 0, 5)); // Put to Elastic whether or not the target is in range
     }
     public PhotonTrackedTarget getTargetWithID(int id) { // Returns the apriltag target with the specified ID (if it exists)
         List<PhotonTrackedTarget> targets = result.getTargets(); // Create a list of all currently tracked targets
@@ -83,8 +83,8 @@ public class VisionSubsystem extends SubsystemBase {
 
         // Print the area and pitch of the target
         //System.out.println("Area: " + april_tag_height + "Pitch: " + april_tag_pitch);
-        SmartDashboard.putNumber("t_area", april_tag_area);
-        SmartDashboard.putNumber("t_pitch", april_tag_pitch);
+        Elastic.putNumber("t_area", april_tag_area);
+        Elastic.putNumber("t_pitch", april_tag_pitch);
         return distance;
     }
 
@@ -101,13 +101,13 @@ public class VisionSubsystem extends SubsystemBase {
 
         //boolean inRange = Math.abs(distanceToTarget) <= distanceThreshold && Math.abs(angleToTarget) <= angleThreshold;
         boolean inRange = Math.abs(Math.abs(distanceToTarget) - distanceThreshold) >= distanceThresholdRange && Math.abs(Math.abs(angleToTarget) - angleThreshold) >= angleThresholdRange;
-        // SmartDashboard.putNumber("t_distance", distanceToTarget);
+        // Elastic.putNumber("t_distance", distanceToTarget);
         
-        // SmartDashboard.putNumber("t_angle", angleToTarget);
+        // Elastic.putNumber("t_angle", angleToTarget);
 
-        // SmartDashboard.putNumber("t_skew", skewTarget);
+        // Elastic.putNumber("t_skew", skewTarget);
 
-        // SmartDashboard.putBoolean("InRange", inRange);
+        // Elastic.putBoolean("InRange", inRange);
     
         return inRange;
     }

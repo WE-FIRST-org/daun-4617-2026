@@ -9,6 +9,7 @@ import edu.wpi.first.hal.FRCNetComm.tResourceType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import com.ctre.phoenix6.SignalLogger;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -33,11 +34,14 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
-    // autonomous chooser on the dashboard.
+    // autonomous chooser on the Elastic.
     m_robotContainer = new RobotContainer();
 
     // Used to track usage of Kitbot code, please do not remove.
     HAL.report(tResourceType.kResourceType_Framework, 10);
+    
+    // Start signal logger
+    SignalLogger.stop();
   }
 
   /**
@@ -48,7 +52,7 @@ public class Robot extends TimedRobot {
    * <p>
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and
-   * SmartDashboard integrated updating.
+   * Elastic integrated updating.
    */
   @Override
   public void robotPeriodic() {
@@ -65,6 +69,7 @@ public class Robot extends TimedRobot {
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    SignalLogger.stop();
   }
 
   @Override
@@ -81,7 +86,7 @@ public class Robot extends TimedRobot {
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
-     CommandScheduler.getInstance().schedule(m_autonomousCommand);
+      CommandScheduler.getInstance().schedule(m_autonomousCommand);
     }
   }
 

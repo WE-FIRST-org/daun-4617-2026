@@ -4,18 +4,21 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.math.MathUtil;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import static frc.robot.Constants.DriveConstants.*;
 import static frc.robot.Constants.OperatorConstants.*;
-import frc.robot.commands.Drive;
+import frc.robot.commands.DefaultDriveCommand;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
-import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.SwerveDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 
 /**
@@ -27,7 +30,7 @@ import frc.robot.subsystems.CANFuelSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
+  private final SwerveDriveSubsystem driveSubsystem = new SwerveDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
 
   // The driver's controller
@@ -39,7 +42,7 @@ public class RobotContainer {
       OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final Elastic.ElasticChooser<Command> autoChooser = new Elastic.ElasticChooser<>("AutoChooser");
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -47,7 +50,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    // Set the options to show up in the Dashboard for selecting auto modes. If you
+    // Set the options to show up in the Elastic for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
@@ -75,12 +78,20 @@ public class RobotContainer {
     // the intake
     operatorController.a().whileTrue(new Eject(fuelSubsystem));
 
-    // Set the default command for the drive subsystem to the command provided by
-    // factory with the values provided by the joystick axes on the driver
-    // controller. The Y axis of the controller is inverted so that pushing the
-    // stick away from you (a negative value) drives the robot forwards (a positive
-    // value)
-    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
+    // Field-oriented swerve drive:
+    //   Left stick Y  → forward/back (field-relative)
+    //   Left stick X  → strafe left/right (field-relative)
+    //   Right stick X → rotate
+    // Back button zeros the gyroscope so current heading = "forward"
+    driveSubsystem.setDefaultCommand(new DefaultDriveCommand(
+        driveSubsystem,
+        () -> - modifyAxis(driverController.getLeftY())  * MAX_VELOCITY_MPS,
+        () -> - modifyAxis(driverController.getLeftX())  * MAX_VELOCITY_MPS,
+        () -> - modifyAxis(driverController.getRightX()) * MAX_ANGULAR_VELOCITY_RPS
+    ));
+
+    driverController.circle().onTrue(
+        new InstantCommand(driveSubsystem::zeroGyroscope, driveSubsystem));
 
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
   }
@@ -93,5 +104,11 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
+  }
+
+  /** Applies a deadband then squares the axis value for smoother control. */
+  private static double modifyAxis(double value) {
+    value = MathUtil.applyDeadband(value, 0.05);
+    return Math.copySign(value * value, value);
   }
 }
