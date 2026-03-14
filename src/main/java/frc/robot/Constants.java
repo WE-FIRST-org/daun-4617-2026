@@ -17,8 +17,8 @@ package frc.robot;
 public final class Constants {
   public static final class DriveConstants {
     // Robot geometry — measure center-to-center of wheels on your actual robot
-    public static final double TRACKWIDTH_METERS = 0.5969; // FIXME: measure left-to-right (~23.5 in)
-    public static final double WHEELBASE_METERS  = 0.5969; // FIXME: measure front-to-back (~23.5 in)
+    public static final double TRACKWIDTH_METERS = 0.5969; // measure left-to-right (~23.5 in)
+    public static final double WHEELBASE_METERS  = 0.5969; // measure front-to-back (~23.5 in)
 
     // Pigeon V1 CAN ID
     public static final int PIGEON_ID = 0; // FIXME: set actual CAN ID
@@ -58,10 +58,8 @@ public final class Constants {
     public static final double WHEEL_DIAMETER_METERS = 0.1016;     // 4 inches
 
     // SparkFlex encoder conversion factors
-    public static final double DRIVE_ENCODER_POSITION_FACTOR =
-        (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;  // meters per motor rotation
-    public static final double DRIVE_ENCODER_VELOCITY_FACTOR =
-        DRIVE_ENCODER_POSITION_FACTOR / 60.0;                   // m/s per RPM
+    public static final double DRIVE_ENCODER_POSITION_FACTOR = (WHEEL_DIAMETER_METERS * Math.PI) / DRIVE_GEAR_RATIO;  // meters per motor rotation
+    public static final double DRIVE_ENCODER_VELOCITY_FACTOR = DRIVE_ENCODER_POSITION_FACTOR / 60.0;// m/s per RPM
 
     public static final double STEER_ENCODER_POSITION_FACTOR =
         (2 * Math.PI) / STEER_GEAR_RATIO;   // radians per motor rotation

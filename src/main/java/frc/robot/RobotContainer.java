@@ -50,7 +50,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
 
-    // Set the options to show up in the Dashboard for selecting auto modes. If you
+    // Set the options to show up in the Elastic for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
     autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
@@ -85,9 +85,9 @@ public class RobotContainer {
     // Back button zeros the gyroscope so current heading = "forward"
     driveSubsystem.setDefaultCommand(new DefaultDriveCommand(
         driveSubsystem,
-        () -> -modifyAxis(driverController.getLeftY())  * MAX_VELOCITY_MPS,
-        () -> -modifyAxis(driverController.getLeftX())  * MAX_VELOCITY_MPS,
-        () -> -modifyAxis(driverController.getRightX()) * MAX_ANGULAR_VELOCITY_RPS
+        () -> - modifyAxis(driverController.getLeftY())  * MAX_VELOCITY_MPS,
+        () -> - modifyAxis(driverController.getLeftX())  * MAX_VELOCITY_MPS,
+        () -> - modifyAxis(driverController.getRightX()) * MAX_ANGULAR_VELOCITY_RPS
     ));
 
     driverController.circle().onTrue(

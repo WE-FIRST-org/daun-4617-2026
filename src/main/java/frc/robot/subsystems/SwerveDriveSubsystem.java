@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Elastic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.DriveConstants.*;
@@ -60,7 +60,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     private final Field2d m_field = new Field2d();
 
     public SwerveDriveSubsystem() {
-        SmartDashboard.putData("Field", m_field);
+        Elastic.putData("Field", m_field);
         zeroGyroscope();
     }
 
@@ -116,8 +116,8 @@ public class SwerveDriveSubsystem extends SubsystemBase {
         m_odometry.update(getGyroscopeRotation(), getModulePositions());
         m_field.setRobotPose(m_odometry.getPoseMeters());
 
-        // SmartDashboard.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
-        SmartDashboard.putString("Robot Pose", m_odometry.getPoseMeters().toString());
+        // Elastic.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
+        Elastic.putString("Robot Pose", m_odometry.getPoseMeters().toString());
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────

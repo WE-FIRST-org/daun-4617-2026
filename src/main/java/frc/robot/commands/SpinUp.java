@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.smartdashboard.Elastic;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANFuelSubsystem;
 import static frc.robot.Constants.FuelConstants.*;
@@ -26,8 +26,8 @@ public class SpinUp extends Command {
   public void initialize() {
     fuelSubsystem
         .setIntakeLauncherRoller(
-            SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE));
-    fuelSubsystem.setFeederRoller(SmartDashboard.getNumber("Launching spin-up feeder value", SPIN_UP_FEEDER_VOLTAGE));
+            Elastic.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE));
+    fuelSubsystem.setFeederRoller(Elastic.getNumber("Launching spin-up feeder value", SPIN_UP_FEEDER_VOLTAGE));
   }
 
   // Called every time the scheduler runs while the command is scheduled. This

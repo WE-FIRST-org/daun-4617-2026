@@ -33,7 +33,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Instantiate our RobotContainer. This will perform all our button bindings,
     // and put our
-    // autonomous chooser on the dashboard.
+    // autonomous chooser on the Elastic.
     m_robotContainer = new RobotContainer();
 
     // Used to track usage of Kitbot code, please do not remove.
@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
    * <p>
    * This runs after the mode specific periodic functions, but before LiveWindow
    * and
-   * SmartDashboard integrated updating.
+   * Elastic integrated updating.
    */
   @Override
   public void robotPeriodic() {
