@@ -15,6 +15,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import frc.robot.utils.Elastic;
 
 import static frc.robot.Constants.DriveConstants.*;
 
@@ -35,19 +36,26 @@ public class SwerveModule {
     private final SparkClosedLoopController m_steerPID;
 
     private final double m_steerOffsetRad;
+    private final boolean isRear;
+    private final String moduleName;
+
+    private static double steer_p;
+    private static double steer_i;
+    private static double steer_d;
 
     /**
+     * @param moduleName     name of the Module
      * @param driveMotorId   CAN ID of the SparkFlex driving the wheel
      * @param steerMotorId   CAN ID of the SparkFlex turning the module
      * @param steerEncoderId CAN ID of the CTRE CANCoder
      * @param steerOffsetRad Absolute angle offset (radians) so forward = 0
      * @param driveInverted  True if drive motor positive = wheel backward
+     * @param isRear         Wether the module is the rear of the drive base relative to the head
      */
-    public SwerveModule(int driveMotorId, int steerMotorId,
-                        int steerEncoderId, double steerOffsetRad,
-                        boolean driveInverted) {
+    public SwerveModule(String moduleName, int driveMotorId, int steerMotorId, int steerEncoderId, double steerOffsetRad, boolean driveInverted,boolean isRear) {
         m_steerOffsetRad = steerOffsetRad;
-
+        this.isRear = isRear;
+        this.moduleName = moduleName;
         // ── Drive motor ───────────────────────────────────────────────────
         m_driveMotor = new SparkFlex(driveMotorId, MotorType.kBrushless);
         SparkFlexConfig driveConfig = new SparkFlexConfig();
@@ -61,6 +69,10 @@ public class SwerveModule {
         m_driveEncoder = m_driveMotor.getEncoder();
         m_driveEncoder.setPosition(0);
 
+        
+        
+        
+        
         // ── Steer motor ───────────────────────────────────────────────────
         m_steerMotor = new SparkFlex(steerMotorId, MotorType.kBrushless);
         SparkFlexConfig steerConfig = new SparkFlexConfig();
@@ -72,7 +84,7 @@ public class SwerveModule {
             .velocityConversionFactor(STEER_ENCODER_VELOCITY_FACTOR);
         steerConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            .pid(STEER_P, STEER_I, STEER_D)
+            .pid(Elastic.getNumber("Steer_P", STEER_P), Elastic.getNumber("Steer_I", STEER_I), Elastic.getNumber("Steer_D", STEER_D))
             .positionWrappingEnabled(true)
             .positionWrappingInputRange(-Math.PI, Math.PI);
         m_steerMotor.configure(steerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -125,13 +137,17 @@ public class SwerveModule {
 
         // Drive: open-loop voltage proportional to fraction of max speed
         double driveVoltage = (optimized.speedMetersPerSecond / maxVelocityMps) * 12.0;
-        m_driveMotor.setVoltage(driveVoltage);
+        m_driveMotor.setVoltage(isRear? -driveVoltage : driveVoltage);
 
         // Steer: closed-loop position PID (radians, wrapping enabled)
         m_steerPID.setReference(
             optimized.angle.getRadians(), ControlType.kPosition);
     }
 
+    
+    public void updateWheelRotation(){
+        Elastic.putNumber(moduleName+" Wheel Rotation(Deg)", getAbsoluteAngleRad()*180/Math.PI);
+    }
     /** Stops both motors. */
     public void stop() {
         m_driveMotor.setVoltage(0);

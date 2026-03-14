@@ -42,14 +42,14 @@ public class SwerveDriveSubsystem extends SubsystemBase {
     // ── Modules ───────────────────────────────────────────────────────────
     // driveInverted: FL and BL are typically inverted on SDS modules — verify on your robot
     // Fix: set FL and BL inverted = true, FR and BR inverted = false
-    private final SwerveModule m_frontLeft  = new SwerveModule(
-        FL_DRIVE_ID, FL_STEER_ID, FL_ENCODER_ID, FL_STEER_OFFSET, false);
-    private final SwerveModule m_frontRight = new SwerveModule(
-        FR_DRIVE_ID, FR_STEER_ID, FR_ENCODER_ID, FR_STEER_OFFSET, true);
-    private final SwerveModule m_backLeft   = new SwerveModule(
-        BL_DRIVE_ID, BL_STEER_ID, BL_ENCODER_ID, BL_STEER_OFFSET, false);
-    private final SwerveModule m_backRight  = new SwerveModule(
-        BR_DRIVE_ID, BR_STEER_ID, BR_ENCODER_ID, BR_STEER_OFFSET, true);
+    private final SwerveModule m_frontLeft  = new SwerveModule("Front Left",
+        FL_DRIVE_ID, FL_STEER_ID, FL_ENCODER_ID, FL_STEER_OFFSET, false,false);
+    private final SwerveModule m_frontRight = new SwerveModule("Front Right",
+        FR_DRIVE_ID, FR_STEER_ID, FR_ENCODER_ID, FR_STEER_OFFSET, true,false);
+    private final SwerveModule m_backLeft   = new SwerveModule("Back Left",
+        BL_DRIVE_ID, BL_STEER_ID, BL_ENCODER_ID, BL_STEER_OFFSET, false,true);
+    private final SwerveModule m_backRight  = new SwerveModule("Back Right", 
+    BR_DRIVE_ID, BR_STEER_ID, BR_ENCODER_ID, BR_STEER_OFFSET, true,true);
 
     // ── Odometry ──────────────────────────────────────────────────────────
     private final SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
@@ -62,6 +62,9 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     public SwerveDriveSubsystem() {
         Elastic.putData("Field", m_field);
+        Elastic.putNumber("Steer_P", STEER_P);
+        Elastic.putNumber("Steer_I", STEER_I);
+        Elastic.putNumber("Steer_D", STEER_D);
         zeroGyroscope();
     }
 
@@ -119,7 +122,10 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Elastic.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
         Elastic.putString("Robot Pose", m_odometry.getPoseMeters().toString());
-        
+        m_backLeft.updateWheelRotation();
+        m_backRight.updateWheelRotation();
+        m_frontLeft.updateWheelRotation();
+        m_frontRight.updateWheelRotation();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────

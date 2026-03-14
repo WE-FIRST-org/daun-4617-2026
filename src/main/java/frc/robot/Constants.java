@@ -24,8 +24,8 @@ public final class Constants {
     public static final int PIGEON_ID = 0; // FIXME: set actual CAN ID
 
     // Maximum robot speeds — tune after mechanical validation
-    public static final double MAX_VELOCITY_MPS = 4.5;            // meters/sec (L2 Mk4i + Neo Vortex)
-    public static final double MAX_ANGULAR_VELOCITY_RPS = Math.PI * 2; // radians/sec
+    public static final double MAX_VELOCITY_MPS = 0.5;            // meters/sec (L2 Mk4i + Neo Vortex) (4.5)
+    public static final double MAX_ANGULAR_VELOCITY_RPS = 0.5; // radians/sec  (Math.PI * 2)
 
     // ── Front Left Module ──────────────────────────────────────────────────
     public static final int FL_DRIVE_ID    = 10;
