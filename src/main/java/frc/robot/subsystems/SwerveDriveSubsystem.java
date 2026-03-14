@@ -11,7 +11,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.Elastic;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.DriveConstants.*;
@@ -41,6 +41,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
     // ── Modules ───────────────────────────────────────────────────────────
     // driveInverted: FL and BL are typically inverted on SDS modules — verify on your robot
+    // Fix: set FL and BL inverted = true, FR and BR inverted = false
     private final SwerveModule m_frontLeft  = new SwerveModule(
         FL_DRIVE_ID, FL_STEER_ID, FL_ENCODER_ID, FL_STEER_OFFSET, false);
     private final SwerveModule m_frontRight = new SwerveModule(
@@ -118,6 +119,7 @@ public class SwerveDriveSubsystem extends SubsystemBase {
 
         // Elastic.putNumber("Gyro Yaw (deg)", m_pigeon.getYaw());
         Elastic.putString("Robot Pose", m_odometry.getPoseMeters().toString());
+        
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────

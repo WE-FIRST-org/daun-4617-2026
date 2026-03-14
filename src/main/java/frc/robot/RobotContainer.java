@@ -5,7 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.utils.Elastic;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -42,7 +42,7 @@ public class RobotContainer {
       OPERATOR_CONTROLLER_PORT);
 
   // The autonomous chooser
-  private final SendableChooser<Command> autoChooser = new SendableChooser<>();
+  private final Elastic.ElasticChooser<Command> autoChooser = new Elastic.ElasticChooser<>("AutoChooser");
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
