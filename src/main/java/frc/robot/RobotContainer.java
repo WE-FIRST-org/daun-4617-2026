@@ -29,6 +29,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
+  public final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   // The driver's controller
   private final CommandPS4Controller driverController = new CommandPS4Controller(
@@ -81,8 +82,18 @@ public class RobotContainer {
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value)
     driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
-
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
+
+    // finding feedforward constant
+    m_driverController.y().whileTrue(m_driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
+    m_driverController.a().whileTrue(m_driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
+    m_driverController.b().whileTrue(m_driveSubsystem.sysIdDynamicLinear(Direction.kForward));
+    m_driverController.x().whileTrue(m_driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
+
+    m_driverController.povUp().whileTrue(m_driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
+    m_driverController.povDown().whileTrue(m_driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
+    m_driverController.povRight().whileTrue(m_driveSubsystem.sysIdDynamicAngular(Direction.kForward));
+    m_driverController.povLeft().whileTrue(m_driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
   }
 
   /**

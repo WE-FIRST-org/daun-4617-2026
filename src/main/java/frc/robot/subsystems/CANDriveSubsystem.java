@@ -66,12 +66,66 @@ public class CANDriveSubsystem extends SubsystemBase {
     leftLeader.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  private final SysIdRoutine m_linearRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism(
+        (voltage) -> {
+          m_leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          m_rightLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          SmartDashboard.putNumber("linear routine", voltage.in(Volts));
+          m_drive.feed();
+        },
+        (log) -> {
+
+        }, // Optional: add custom logging here
+        this
+      )
+  );
+
+  private final SysIdRoutine m_angularRoutine = new SysIdRoutine(
+    new SysIdRoutine.Config(),
+    new SysIdRoutine.Mechanism(
+        (voltage) -> {
+          m_leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          m_rightLeader.setVoltage(voltage.unaryMinus().in(Volts)); // Applied voltage
+          SmartDashboard.putNumber("angular routine", voltage.in(Volts));
+          SignalLogger.start();
+          m_drive.feed();
+        },
+        null, // Optional: add custom logging here
+        this
+      )
+  );
+
+  public Command sysIdQuasistaticLinear(SysIdRoutine.Direction direction) {
+      return m_linearRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamicLinear(SysIdRoutine.Direction direction) {
+      return m_linearRoutine.dynamic(direction);
+  }
+
+  public Command sysIdQuasistaticAngular(SysIdRoutine.Direction direction) {
+      return m_angularRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamicAngular(SysIdRoutine.Direction direction) {
+      return m_angularRoutine.dynamic(direction);
+  }
+
   @Override
   public void periodic() {
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
     drive.arcadeDrive(xSpeed, zRotation);
+  }
+
+  /**
+   * 
+   */
+  public void stop() {
+    m_drive.stopMotor();
   }
 
 }
