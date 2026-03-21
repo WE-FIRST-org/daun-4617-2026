@@ -21,7 +21,7 @@
 // SOFTWARE.
 // Author: UMN Robotics Ri3d
 
-package frc.robot.subsystems; 
+package frc.robot.subsystems;
 
 import java.util.List;
 
@@ -43,7 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
     public VisionSubsystem() {
         camera = new PhotonCamera(USB_CAMERA_NAME);
     }
-    
+
     @Override
     public void periodic() {
         this.result = camera.getLatestResult(); // Query the latest result from PhotonVision
@@ -93,7 +93,7 @@ public class VisionSubsystem extends SubsystemBase {
     
     public PhotonTrackedTarget getBestTarget() {
         if (hasTarget && result != null) {
-            return result.getBestTarget(); // Returns the best (closest) target
+        return result.getBestTarget(); // Returns the best (closest) target
         }
         else {
             return null; // Otherwise, returns null if no targets are currently found

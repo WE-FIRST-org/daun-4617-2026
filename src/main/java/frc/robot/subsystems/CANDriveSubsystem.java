@@ -11,7 +11,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
 
 public class CANDriveSubsystem extends SubsystemBase {
@@ -70,10 +75,10 @@ public class CANDriveSubsystem extends SubsystemBase {
     new SysIdRoutine.Config(),
     new SysIdRoutine.Mechanism(
         (voltage) -> {
-          m_leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
-          m_rightLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          rightLeader.setVoltage(voltage.in(Volts)); // Applied voltage
           SmartDashboard.putNumber("linear routine", voltage.in(Volts));
-          m_drive.feed();
+          drive.feed();
         },
         (log) -> {
 
@@ -86,11 +91,10 @@ public class CANDriveSubsystem extends SubsystemBase {
     new SysIdRoutine.Config(),
     new SysIdRoutine.Mechanism(
         (voltage) -> {
-          m_leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
-          m_rightLeader.setVoltage(voltage.unaryMinus().in(Volts)); // Applied voltage
+          leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
+          rightLeader.setVoltage(voltage.unaryMinus().in(Volts)); // Applied voltage
           SmartDashboard.putNumber("angular routine", voltage.in(Volts));
-          SignalLogger.start();
-          m_drive.feed();
+          drive.feed();
         },
         null, // Optional: add custom logging here
         this
@@ -125,7 +129,7 @@ public class CANDriveSubsystem extends SubsystemBase {
    * 
    */
   public void stop() {
-    m_drive.stopMotor();
+    drive.stopMotor();
   }
 
 }

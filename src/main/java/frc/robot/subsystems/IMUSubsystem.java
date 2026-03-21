@@ -1,11 +1,8 @@
 package frc.robot.subsystems; 
 
-import java.util.List;
-
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+// import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.LinearAcceleration;
@@ -19,15 +16,23 @@ import com.studica.frc.Navx;
 
 public class IMUSubsystem extends SubsystemBase {
     private Navx navx;
-    private SimDeviceSim device;
+    // private SimDeviceSim device;
+
+    // Required to get different readings
+    private Quaternion quat = navx.getQuat6D();
+    private AngularVelocity[] omega = navx.getAngularVel();
+    private Quaternion quat9 = navx.getQuat9D();
+    private LinearAcceleration[] accel = navx.getLinearAccel();
+    private float[] mag = new float[4];
+    // private int error = navx.getCompass(mag);
     
-    public VisionSubsystem() {
+    public IMUSubsystem() {
         // Create NavX Object
         navx = new Navx(0, 100); // CAN
         // navx = new Navx(Navx.Port.kUSB1); // USB 
     
         // Create Sim Object
-        device = new SimDeviceSim("NavX3", 0);
+        // device = new SimDeviceSim("NavX3", 0);
         
         // You can enable which messages the navx sends to prevent bus saturation 
         navx.enableOptionalMessages(true,
@@ -50,14 +55,6 @@ public class IMUSubsystem extends SubsystemBase {
     
         // Add reset yaw btn to dashboard
         SmartDashboard.putBoolean("Reset Yaw", false);
-
-        // Required to get different readings
-        Quaternion quat = navx.getQuat6D();
-        AngularVelocity[] omega = navx.getAngularVel();
-        Quaternion quat9 = navx.getQuat9D();
-        LinearAcceleration[] accel = navx.getLinearAccel();
-        float[] mag = new float[4];
-        int error = navx.getCompass(mag);
     }
     
     @Override

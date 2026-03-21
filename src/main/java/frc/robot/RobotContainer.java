@@ -9,6 +9,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
 import static frc.robot.Constants.OperatorConstants.*;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
@@ -17,6 +19,7 @@ import frc.robot.commands.Intake;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -85,15 +88,14 @@ public class RobotContainer {
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
 
     // finding feedforward constant
-    m_driverController.y().whileTrue(m_driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
-    m_driverController.a().whileTrue(m_driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
-    m_driverController.b().whileTrue(m_driveSubsystem.sysIdDynamicLinear(Direction.kForward));
-    m_driverController.x().whileTrue(m_driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
-
-    m_driverController.povUp().whileTrue(m_driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
-    m_driverController.povDown().whileTrue(m_driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
-    m_driverController.povRight().whileTrue(m_driveSubsystem.sysIdDynamicAngular(Direction.kForward));
-    m_driverController.povLeft().whileTrue(m_driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
+    driverController.triangle().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
+    driverController.cross().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
+    driverController.circle().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kForward));
+    driverController.square().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
+    driverController.povUp().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
+    driverController.povDown().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
+    driverController.povRight().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kForward));
+    driverController.povLeft().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
   }
 
   /**
