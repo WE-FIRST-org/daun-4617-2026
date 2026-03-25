@@ -63,7 +63,7 @@ public final class Constants {
     // VISION CONSTANTS
     //make sure to change it back into 46.17 after logic implementation, access raspi's static ip address via "sudo nmcui" (Network Managemer Command line User Interface)
     //router ip address 10.TE.AM.1 (eg 10.46.17.1)
-    // public static final String USB_CAMERA_NAME = "USB_Camera-10.48.14.5"; //VisionSubsystem.java MIT License text there
+    // public static final String USB_CAMERA_NAME = "USB_Camera-10.46.17.42"; //VisionSubsystem.java MIT License text there
     public static final String USB_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"; //VisionSubsystem.java MIT License text there
 
     // April tag heights of game pieces

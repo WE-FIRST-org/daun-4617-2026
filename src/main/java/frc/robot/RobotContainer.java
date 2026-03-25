@@ -7,11 +7,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.CommandPS4Controller;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import static frc.robot.Constants.OperatorConstants.*;
+
+import frc.robot.commands.AimAndRangeCommand;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
@@ -35,7 +36,7 @@ public class RobotContainer {
   public final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
   // The driver's controller
-  private final CommandPS4Controller driverController = new CommandPS4Controller(
+  private final CommandXboxController driverController = new CommandXboxController(
       DRIVER_CONTROLLER_PORT);
 
   // The operator's controller
@@ -69,6 +70,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    driverController.rightTrigger(0.1).whileTrue(new AimAndRangeCommand(driveSubsystem, m_visionSubsystem));
+
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
@@ -88,10 +91,10 @@ public class RobotContainer {
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
 
     // finding feedforward constant
-    driverController.triangle().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
-    driverController.cross().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
-    driverController.circle().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kForward));
-    driverController.square().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
+    driverController.y().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
+    driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
+    driverController.b().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kForward));
+    driverController.x().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
     driverController.povUp().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
     driverController.povDown().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
     driverController.povRight().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kForward));

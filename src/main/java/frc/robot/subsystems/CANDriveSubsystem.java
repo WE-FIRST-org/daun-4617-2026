@@ -20,12 +20,12 @@ import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
 
 public class CANDriveSubsystem extends SubsystemBase {
-  private final SparkMax leftLeader;
-  private final SparkMax leftFollower;
-  private final SparkMax rightLeader;
-  private final SparkMax rightFollower;
+  private SparkMax leftLeader;
+  private SparkMax leftFollower;
+  private SparkMax rightLeader;
+  private SparkMax rightFollower;
 
-  private final DifferentialDrive drive;
+  private DifferentialDrive drive;
 
   public CANDriveSubsystem() {
     // create brushless motors for drive
@@ -72,6 +72,7 @@ public class CANDriveSubsystem extends SubsystemBase {
   }
 
   private final SysIdRoutine m_linearRoutine = new SysIdRoutine(
+
     new SysIdRoutine.Config(),
     new SysIdRoutine.Mechanism(
         (voltage) -> {
