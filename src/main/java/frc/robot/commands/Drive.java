@@ -35,7 +35,14 @@ public class Drive extends Command {
   // controllable.
   @Override
   public void execute() {
-    driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING, -controller.getRightX() * ROTATION_SCALING);
+    boolean isInverted = InvertDrive.getInvertedStatus();
+
+    if (isInverted) {
+      driveSubsystem.driveArcade(controller.getLeftY() * DRIVE_SCALING, controller.getRightX() * ROTATION_SCALING);
+    } else {
+      driveSubsystem.driveArcade(-controller.getLeftY() * DRIVE_SCALING, controller.getRightX() * ROTATION_SCALING);
+    }
+    
   }
 
   // Called once the command ends or is interrupted.

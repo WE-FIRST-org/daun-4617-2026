@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.InvertDrive;
 
 import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
@@ -120,6 +121,8 @@ public class CANDriveSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    boolean isInverted = InvertDrive.getInvertedStatus();
+    SmartDashboard.putBoolean("Shooter side", isInverted);
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
