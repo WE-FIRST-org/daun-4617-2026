@@ -92,11 +92,11 @@ public class IMUSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("q6_y:", quat.getY());
         SmartDashboard.putNumber("q6_z:", quat.getZ());
     
-    // Angular Velocity (refresh from sensor each loop)
-    AngularVelocity[] av = navx.getAngularVel();
-    SmartDashboard.putNumber("w_x:", av[0].in(DegreesPerSecond));
-    SmartDashboard.putNumber("w_y:", av[1].in(DegreesPerSecond));
-    SmartDashboard.putNumber("w_z:", av[2].in(DegreesPerSecond)); 
+        // Angular Velocity (refresh from sensor each loop)
+        AngularVelocity[] av = navx.getAngularVel();
+        SmartDashboard.putNumber("w_x:", av[0].in(DegreesPerSecond));
+        SmartDashboard.putNumber("w_y:", av[1].in(DegreesPerSecond));
+        SmartDashboard.putNumber("w_z:", av[2].in(DegreesPerSecond)); 
     
         // 9-axis quaternion 
         SmartDashboard.putNumber("q9_w:", quat9.getW());
