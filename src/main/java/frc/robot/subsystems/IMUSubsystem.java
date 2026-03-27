@@ -61,14 +61,14 @@ public class IMUSubsystem extends SubsystemBase {
         // Add reset yaw btn to dashboard
         SmartDashboard.putBoolean("Reset Yaw", false);
 
-                // Initialize integration state
-                lastIntegrateTime = Timer.getFPGATimestamp();
-                try {
-                    AngularVelocity[] av = navx.getAngularVel();
-                    lastOmegaRad = Math.toRadians(av[2].in(DegreesPerSecond));
-                } catch (Exception e) {
-                    lastOmegaRad = 0.0;
-                }
+        // Initialize integration state
+        lastIntegrateTime = Timer.getFPGATimestamp();
+        try {
+            AngularVelocity[] av = navx.getAngularVel();
+            lastOmegaRad = Math.toRadians(av[2].in(DegreesPerSecond));
+        } catch (Exception e) {
+            lastOmegaRad = 0.0;
+        }
     }
     
     @Override
