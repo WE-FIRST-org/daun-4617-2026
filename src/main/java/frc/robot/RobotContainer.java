@@ -19,6 +19,7 @@ import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.Intake;
 import frc.robot.commands.InvertDrive;
 import frc.robot.commands.LaunchSequence;
+import frc.robot.commands.ResetSensors;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.IMUSubsystem;
@@ -103,6 +104,8 @@ public class RobotContainer {
     driverController.povDown().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
     driverController.povRight().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kForward));
     driverController.povLeft().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
+
+    driverController.start().onTrue(new ResetSensors(driveSubsystem, imu));
   }
 
   /**

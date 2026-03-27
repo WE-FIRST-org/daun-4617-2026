@@ -236,4 +236,9 @@ public class CANDriveSubsystem extends SubsystemBase {
     drive.stopMotor();
   }
 
+  public void resetEnconders() {
+    leftLeader.getEncoder().setPosition(0);
+    rightLeader.getEncoder().setPosition(0);
+  }
+
 }
