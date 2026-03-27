@@ -1,19 +1,19 @@
 package frc.robot.subsystems; 
 
-// import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.geometry.Quaternion;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearAcceleration;
-
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
 import com.studica.frc.Navx;
+
+import edu.wpi.first.math.geometry.Quaternion;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearAcceleration;
+import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 // import java.io.BufferedWriter;
 // import java.io.FileWriter;
@@ -94,9 +94,9 @@ public class IMUSubsystem extends SubsystemBase {
     
         // Angular Velocity (refresh from sensor each loop)
         AngularVelocity[] av = navx.getAngularVel();
-        SmartDashboard.putNumber("w_x:", av[0].in(DegreesPerSecond));
-        SmartDashboard.putNumber("w_y:", av[1].in(DegreesPerSecond));
-        SmartDashboard.putNumber("w_z:", av[2].in(DegreesPerSecond)); 
+        SmartDashboard.putNumber("w_x:", av[0].in(DegreesPerSecond)); //rol
+        SmartDashboard.putNumber("w_y:", av[1].in(DegreesPerSecond)); //pitch
+        SmartDashboard.putNumber("w_z:", av[2].in(DegreesPerSecond)); //yaw
     
         // 9-axis quaternion 
         SmartDashboard.putNumber("q9_w:", quat9.getW());
@@ -123,7 +123,6 @@ public class IMUSubsystem extends SubsystemBase {
           navx.resetYaw();
           SmartDashboard.putBoolean("Reset Yaw", false);
         }
-
                 // Integrate gyro Z (degrees/sec -> rad/sec) using trapezoidal rule
                 double now = Timer.getFPGATimestamp();
                 double dt = now - lastIntegrateTime;
@@ -196,15 +195,18 @@ public class IMUSubsystem extends SubsystemBase {
     }
 
     public double getAngularVelX() {
-        return omega[0].in(DegreesPerSecond);
+        //return omega[0].in(DegreesPerSecond);
+        return navx.getAngularVel()[0].in(DegreesPerSecond);
     }
 
     public double getAngularVelY() {
-        return omega[1].in(DegreesPerSecond);
+        //return omega[1].in(DegreesPerSecond);
+        return navx.getAngularVel()[1].in(DegreesPerSecond);
     }
 
     public double getAngularVelZ() {
-        return omega[2].in(DegreesPerSecond);
+        //return omega[2].in(DegreesPerSecond);
+        return navx.getAngularVel()[2].in(DegreesPerSecond);
     }
 
     public double getQ9W() {
