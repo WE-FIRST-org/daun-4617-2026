@@ -254,4 +254,11 @@ public class IMUSubsystem extends SubsystemBase {
     public double getTemp() {
         return navx.getTemperature().in(Celsius);
     }
+
+    /**
+     * Resets the yaw to 0 degrees
+     */
+    public void resetYaw(){
+        navx.resetYaw();
+    }
 }
