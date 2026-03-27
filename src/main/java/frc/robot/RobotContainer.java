@@ -17,9 +17,11 @@ import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
 import frc.robot.commands.Intake;
+import frc.robot.commands.InvertDrive;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
+import frc.robot.subsystems.IMUSubsystem;
 import frc.robot.subsystems.VisionSubsystem;
 
 /**
@@ -31,7 +33,8 @@ import frc.robot.subsystems.VisionSubsystem;
  */
 public class RobotContainer {
   // The robot's subsystems
-  private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem();
+  private final IMUSubsystem imu = new IMUSubsystem();
+  private final CANDriveSubsystem driveSubsystem = new CANDriveSubsystem(imu);
   private final CANFuelSubsystem fuelSubsystem = new CANFuelSubsystem();
   public final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
 
@@ -71,7 +74,8 @@ public class RobotContainer {
    */
   private void configureBindings() {
     driverController.rightTrigger(0.1).whileTrue(new AimAndRangeCommand(driveSubsystem, m_visionSubsystem));
-
+    // Run invert once when the bumper is pressed (whileTrue schedules repeatedly)
+    driverController.leftBumper().onTrue(new InvertDrive());
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));

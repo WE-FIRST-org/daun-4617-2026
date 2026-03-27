@@ -4,21 +4,31 @@
 
 package frc.robot.subsystems;
 
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.InvertDrive;
-
-import static edu.wpi.first.units.Units.Volts;
 import static frc.robot.Constants.DriveConstants.*;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
+import edu.wpi.first.units.measure.MutDistance;
+import edu.wpi.first.units.measure.MutLinearVelocity;
+import edu.wpi.first.units.measure.MutVoltage;
 
 public class CANDriveSubsystem extends SubsystemBase {
   private SparkMax leftLeader;
@@ -27,8 +37,20 @@ public class CANDriveSubsystem extends SubsystemBase {
   private SparkMax rightFollower;
 
   private DifferentialDrive drive;
+  // telemetry: last commanded values
+  private double lastXSpeed = 0.0;
+  private double lastZRotation = 0.0;
 
-  public CANDriveSubsystem() {
+  private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+  private final MutDistance m_distance = Meters.mutable(0);
+  private final MutLinearVelocity m_linearVelocity = MetersPerSecond.mutable(0);
+  private final MutAngularVelocity m_angularVelocity = DegreesPerSecond.mutable(0);
+  private final MutAngle m_angle = Degrees.mutable(0);
+
+  private IMUSubsystem imu;
+
+  public CANDriveSubsystem(IMUSubsystem imu) {
+    this.imu = imu;
     // create brushless motors for drive
     leftLeader = new SparkMax(LEFT_LEADER_ID, MotorType.kBrushless);
     leftFollower = new SparkMax(LEFT_FOLLOWER_ID, MotorType.kBrushless);
@@ -55,6 +77,9 @@ public class CANDriveSubsystem extends SubsystemBase {
     config.voltageCompensation(12);
     config.smartCurrentLimit(DRIVE_MOTOR_CURRENT_LIMIT);
 
+    config.encoder.positionConversionFactor((Math.PI*WHEEL_DIAMETER_METERS)/GEAR_RATIO);
+    config.encoder.velocityConversionFactor((Math.PI*WHEEL_DIAMETER_METERS)/(60*GEAR_RATIO));
+
     // Set configuration to follow each leader and then apply it to corresponding
     // follower. Resetting in case a new controller is swapped
     // in and persisting in case of a controller reset due to breaker trip
@@ -73,7 +98,6 @@ public class CANDriveSubsystem extends SubsystemBase {
   }
 
   private final SysIdRoutine m_linearRoutine = new SysIdRoutine(
-
     new SysIdRoutine.Config(),
     new SysIdRoutine.Mechanism(
         (voltage) -> {
@@ -83,14 +107,28 @@ public class CANDriveSubsystem extends SubsystemBase {
           drive.feed();
         },
         (log) -> {
-
-        }, // Optional: add custom logging here
+          log.motor("drive-left")
+            .voltage(
+              m_appliedVoltage.mut_replace(
+                leftLeader.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(m_distance.mut_replace(leftLeader.getEncoder().getPosition(), Meters))
+            .linearVelocity(
+              m_linearVelocity.mut_replace(leftLeader.getEncoder().getVelocity(), MetersPerSecond));
+          
+          log.motor("drive-right")
+            .voltage(
+              m_appliedVoltage.mut_replace(
+                rightLeader.get() * RobotController.getBatteryVoltage(), Volts))
+            .linearPosition(m_distance.mut_replace(rightLeader.getEncoder().getPosition(), Meters))
+            .linearVelocity(
+              m_linearVelocity.mut_replace(rightLeader.getEncoder().getVelocity(), MetersPerSecond));
+        }, 
         this
       )
   );
 
   private final SysIdRoutine m_angularRoutine = new SysIdRoutine(
-    new SysIdRoutine.Config(),
+    new SysIdRoutine.Config(), 
     new SysIdRoutine.Mechanism(
         (voltage) -> {
           leftLeader.setVoltage(voltage.in(Volts)); // Applied voltage
@@ -98,7 +136,23 @@ public class CANDriveSubsystem extends SubsystemBase {
           SmartDashboard.putNumber("angular routine", voltage.in(Volts));
           drive.feed();
         },
-        null, // Optional: add custom logging here
+        (log) -> {
+          log.motor("drive-left")
+            .voltage(
+              m_appliedVoltage.mut_replace(
+                leftLeader.get() * RobotController.getBatteryVoltage(), Volts))
+            .angularPosition(m_angle.mut_replace(leftLeader.getEncoder().getPosition(), Degrees))
+            .angularVelocity(
+              m_angularVelocity.mut_replace(imu.getAngularVelZ(), DegreesPerSecond));
+          
+          log.motor("drive-right")
+            .voltage(
+              m_appliedVoltage.mut_replace(
+                rightLeader.get() * RobotController.getBatteryVoltage(), Volts))
+            .angularPosition(m_angle.mut_replace(rightLeader.getEncoder().getPosition(), Degrees))
+            .angularVelocity(
+              m_angularVelocity.mut_replace(imu.getAngularVelZ(), DegreesPerSecond));
+        },
         this
       )
   );
@@ -122,10 +176,56 @@ public class CANDriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     boolean isInverted = InvertDrive.getInvertedStatus();
-    SmartDashboard.putBoolean("Shooter side", isInverted);
+    String front;
+    if (isInverted) {
+      front = "Intake";
+    } else {
+      front = "Battery";
+    }
+    SmartDashboard.putString("Front is: ", front);
+
+    // Publish commanded inputs
+    SmartDashboard.putNumber("drive/lastXSpeed", lastXSpeed);
+    SmartDashboard.putNumber("drive/lastZRotation", lastZRotation);
+
+    // Left leader telemetry
+    try {
+      SmartDashboard.putNumber("drive/leftLeader/current", leftLeader.getOutputCurrent());
+      SmartDashboard.putNumber("drive/leftLeader/busVoltage", leftLeader.getBusVoltage());
+      SmartDashboard.putNumber("drive/leftLeader/appliedOutput", leftLeader.getAppliedOutput());
+  // temperature telemetry not available on this SparkMax wrapper
+      SmartDashboard.putNumber("drive/leftLeader/encoderPosition", leftLeader.getEncoder().getPosition());
+      SmartDashboard.putNumber("drive/leftLeader/encoderVelocity", leftLeader.getEncoder().getVelocity());
+    } catch (Exception e) {
+      // If any of the calls are not available on the vendor library, don't crash the robot; just skip telemetry
+      SmartDashboard.putString("drive/leftLeader/telemetryError", e.getMessage());
+    }
+
+    // Right leader telemetry
+    try {
+      SmartDashboard.putNumber("drive/rightLeader/current", rightLeader.getOutputCurrent());
+      SmartDashboard.putNumber("drive/rightLeader/busVoltage", rightLeader.getBusVoltage());
+      SmartDashboard.putNumber("drive/rightLeader/appliedOutput", rightLeader.getAppliedOutput());
+  // temperature telemetry not available on this SparkMax wrapper
+      SmartDashboard.putNumber("drive/rightLeader/encoderPosition", rightLeader.getEncoder().getPosition());
+      SmartDashboard.putNumber("drive/rightLeader/encoderVelocity", rightLeader.getEncoder().getVelocity());
+    } catch (Exception e) {
+      SmartDashboard.putString("drive/rightLeader/telemetryError", e.getMessage());
+    }
+
+    // Followers telemetry
+    try {
+      SmartDashboard.putNumber("drive/leftFollower/current", leftFollower.getOutputCurrent());
+      SmartDashboard.putNumber("drive/rightFollower/current", rightFollower.getOutputCurrent());
+    } catch (Exception e) {
+      SmartDashboard.putString("drive/followers/telemetryError", e.getMessage());
+    }
   }
 
   public void driveArcade(double xSpeed, double zRotation) {
+    // store last commanded values for telemetry
+    lastXSpeed = xSpeed;
+    lastZRotation = zRotation;
     drive.arcadeDrive(xSpeed, zRotation);
   }
 

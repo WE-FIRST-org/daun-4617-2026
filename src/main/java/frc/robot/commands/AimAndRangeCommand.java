@@ -4,6 +4,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
@@ -18,6 +19,9 @@ public class AimAndRangeCommand extends Command {
     
     private final PIDController turnPID = new PIDController(TURN_P, TURN_I,TURN_D);
     private final PIDController drivePID = new PIDController(DRIVE_P, DRIVE_I, DRIVE_D);
+
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(DRIVE_kS, DRIVE_kV, DRIVE_kA);
+    private final SimpleMotorFeedforward turnFeedforward = new SimpleMotorFeedforward(TURN_kS, TURN_kV, TURN_kA);
 
     public AimAndRangeCommand(CANDriveSubsystem drive, VisionSubsystem vision) {
         m_drive = drive;
@@ -61,8 +65,8 @@ public class AimAndRangeCommand extends Command {
         }
 
         // PID: measurement, setpoint
-        double rotationSpeed = turnPID.calculate(angleDeg, 0.0); // turn to yaw=0
-        double forwardSpeed = drivePID.calculate(distance, DISTANCE_GOAL_METERS);
+        double rotationSpeed = turnFeedforward.calculate(0) + turnPID.calculate(angleDeg, 0.0); // turn to yaw=0
+        double forwardSpeed = driveFeedforward.calculate(DISTANCE_GOAL_METERS) + drivePID.calculate(distance, DISTANCE_GOAL_METERS);
 
         // Clamp outputs to safe [-1,1] (or your motor input range)
         rotationSpeed = Math.max(-1.0, Math.min(1.0, rotationSpeed));

@@ -25,6 +25,9 @@ public final class Constants {
     // Current limit for drivetrain motors. 60A is a reasonable maximum to reduce
     // likelihood of tripping breakers or damaging CIM motors
     public static final int DRIVE_MOTOR_CURRENT_LIMIT = 60;
+
+    public static final double GEAR_RATIO = 10.71;
+    public static final double WHEEL_DIAMETER_METERS = 0.1524;
   }
 
   public static final class FuelConstants {
@@ -90,8 +93,12 @@ public final class Constants {
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
-    // public static final double DRIVE_kS = 0.3; // was 0.1
-    // public static final double DRIVE_kV = 0;
-    // public static final double DRIVE_kA = 0;
+    public static final double TURN_kS = 0;
+    public static final double TURN_kV = 0;
+    public static final double TURN_kA = 0;
+
+    public static final double DRIVE_kS = 0;
+    public static final double DRIVE_kV = 0;
+    public static final double DRIVE_kA = 0;
   }
 }
