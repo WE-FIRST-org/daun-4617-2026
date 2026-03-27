@@ -36,53 +36,94 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.VisionConstants.*;
 
 public class VisionSubsystem extends SubsystemBase {
-    PhotonCamera camera; // Declare the name of the camera used in the pipeline
-    boolean hasTarget = false; // Stores whether or not a target is detected
-    PhotonPipelineResult result = null; // Stores all the data that Photonvision returns
+    PhotonCamera intakeCamera, shooterCamera; // Declare the name of the camera used in the pipeline
+    boolean intakeHasTarget = false, shooterHasTarget = false; // Stores whether or not a target is detected
+    PhotonPipelineResult intakeResult = null, shooterResult = null; // Stores all the data that Photonvision returns
     
     public VisionSubsystem() {
-        camera = new PhotonCamera(USB_CAMERA_NAME);
+        intakeCamera = new PhotonCamera(INTAKE_USB_CAMERA_NAME);
+        shooterCamera = new PhotonCamera(SHOOTER_USB_CAMERA_NAME);
     }
 
     @Override
     public void periodic() {
-        this.result = camera.getLatestResult(); // Query the latest result from PhotonVision
-        hasTarget = (result != null) && result.hasTargets(); // update boolean
+        this.intakeResult = intakeCamera.getLatestResult(); // Query the latest result from PhotonVision
+        this.shooterResult = shooterCamera.getLatestResult(); // Query the latest result from PhotonVision
+        intakeHasTarget = (intakeResult != null) && intakeResult.hasTargets(); // update boolean
+        shooterHasTarget = (shooterResult != null) && shooterResult.hasTargets(); // update boolean
 
-        if (hasTarget && result.getBestTarget() != null) {
-            PhotonTrackedTarget best = result.getBestTarget();
-            SmartDashboard.putNumber("Best Target ID", best.getFiducialId());
-            SmartDashboard.putNumber("t_area", best.getArea());
-            SmartDashboard.putNumber("t_pitch", best.getPitch());
-            SmartDashboard.putNumber("t_yaw", best.getYaw());
-            SmartDashboard.putNumber("t_skew", best.getSkew());
+        if (intakeHasTarget && intakeResult.getBestTarget() != null) {
+            PhotonTrackedTarget best = intakeResult.getBestTarget();
+            SmartDashboard.putNumber("Intake Best Target ID", best.getFiducialId());
+            SmartDashboard.putNumber("intake t_area", best.getArea());
+            SmartDashboard.putNumber("intake t_pitch", best.getPitch());
+            SmartDashboard.putNumber("intake t_yaw", best.getYaw());
+            SmartDashboard.putNumber("intake t_skew", best.getSkew());
             // If you want distance/InRange telemetry, compute and publish here
-            SmartDashboard.putNumber("t_distance_est", getDistanceToTarget(best));
-            SmartDashboard.putBoolean("InRange", InRange(0, 5, 0, 5));
+            SmartDashboard.putNumber("intake t_distance_est", getDistanceToIntakeTarget(best));
+            SmartDashboard.putBoolean("Intake InRange", InRange(0, 5, 0, 5));
         } else {
-            SmartDashboard.putNumber("Best Target ID", -1);
-            SmartDashboard.putNumber("t_area", 0);
-            SmartDashboard.putNumber("t_pitch", 0);
-            SmartDashboard.putNumber("t_yaw", 0);
-            SmartDashboard.putNumber("t_skew", 0);
-            SmartDashboard.putNumber("t_distance_est", 0);
-            SmartDashboard.putBoolean("InRange", false);
+            SmartDashboard.putNumber("Intake Best Target ID", -1);
+            SmartDashboard.putNumber("intake t_area", 0);
+            SmartDashboard.putNumber("intake t_pitch", 0);
+            SmartDashboard.putNumber("intake t_yaw", 0);
+            SmartDashboard.putNumber("intake t_skew", 0);
+            SmartDashboard.putNumber("intake t_distance_est", 0);
+            SmartDashboard.putBoolean("Intake InRange", false);
+        }
+
+        if (shooterHasTarget && shooterResult.getBestTarget() != null) {
+            PhotonTrackedTarget best = shooterResult.getBestTarget();
+            SmartDashboard.putNumber("Shooter Best Target ID", best.getFiducialId());
+            SmartDashboard.putNumber("shooter t_area", best.getArea());
+            SmartDashboard.putNumber("shooter t_pitch", best.getPitch());
+            SmartDashboard.putNumber("shooter t_yaw", best.getYaw());
+            SmartDashboard.putNumber("shooter t_skew", best.getSkew());
+            // If you want distance/InRange telemetry, compute and publish here
+            SmartDashboard.putNumber("shooter t_distance_est", getDistanceToShooterTarget(best));
+            SmartDashboard.putBoolean("Shooter InRange", InRange(0, 5, 0, 5));
+        } else {
+            SmartDashboard.putNumber("Shooter Best Target ID", -1);
+            SmartDashboard.putNumber("shooter t_area", 0);
+            SmartDashboard.putNumber("shooter t_pitch", 0);
+            SmartDashboard.putNumber("shooter t_yaw", 0);
+            SmartDashboard.putNumber("shooter t_skew", 0);
+            SmartDashboard.putNumber("shooter t_distance_est", 0);
+            SmartDashboard.putBoolean("Shooter InRange", false);
         }
 
         InRange(0, 5, 0, 5); // Put to SmartDashboard whether or not the target is in range
     }
 
 
-    public PhotonPipelineResult getLatestResult() {
-        return this.result;
+    public PhotonPipelineResult getLatestIntakeResult() {
+        return this.intakeResult;
     }
 
-    public PhotonTrackedTarget getTargetWithID(int id) { // Returns the apriltag target with the specified ID (if it exists)
-        if (result == null) {
+    public PhotonPipelineResult getLatestShooterResult() {
+        return this.shooterResult;
+    }
+
+    public PhotonTrackedTarget getIntakeTargetWithID(int id) { // Returns the apriltag target with the specified ID (if it exists)
+        if (intakeResult == null) {
             return null;
         }
 
-        List<PhotonTrackedTarget> targets = result.getTargets(); // Create a list of all currently tracked targets
+        List<PhotonTrackedTarget> targets = intakeResult.getTargets(); // Create a list of all currently tracked targets
+        for (PhotonTrackedTarget i : targets) {
+            if (i.getFiducialId() == id) { // Check the ID of each target in the list
+                return i; // Found the target with the specified ID!
+            }
+        }
+        return null; // Failed to find the target with the specified ID
+    }
+
+    public PhotonTrackedTarget getShooterTargetWithID(int id) { // Returns the apriltag target with the specified ID (if it exists)
+        if (shooterResult == null) {
+            return null;
+        }
+
+        List<PhotonTrackedTarget> targets = shooterResult.getTargets(); // Create a list of all currently tracked targets
         for (PhotonTrackedTarget i : targets) {
             if (i.getFiducialId() == id) { // Check the ID of each target in the list
                 return i; // Found the target with the specified ID!
@@ -91,28 +132,57 @@ public class VisionSubsystem extends SubsystemBase {
         return null; // Failed to find the target with the specified ID
     }
     
-    public PhotonTrackedTarget getBestTarget() {
-        if (hasTarget && result != null) {
-        return result.getBestTarget(); // Returns the best (closest) target
+    public PhotonTrackedTarget getBestIntakeTarget() {
+        if (intakeHasTarget && intakeResult != null) {
+        return intakeResult.getBestTarget(); // Returns the best (closest) target
         }
         else {
             return null; // Otherwise, returns null if no targets are currently found
         }
     }
 
-    public boolean getHasTarget() {
-        return hasTarget; // Returns whether or not a target was found
+    public PhotonTrackedTarget getBestShooterTarget() {
+        if (shooterHasTarget && shooterResult != null) {
+        return shooterResult.getBestTarget(); // Returns the best (closest) target
+        }
+        else {
+            return null; // Otherwise, returns null if no targets are currently found
+        }
     }
 
-    public double getDistanceToTarget(PhotonTrackedTarget target) {
-        if (!hasTarget || target == null) {
+    public boolean getIntakeHasTarget() {
+        return intakeHasTarget; // Returns whether or not a target was found
+    }
+
+    public boolean getShooterHasTarget() {
+        return shooterHasTarget; // Returns whether or not a target was found
+    }
+
+    public double getDistanceToIntakeTarget(PhotonTrackedTarget target) {
+        if (!intakeHasTarget || target == null) {
             return Double.NaN;
         }
 
         double distance = PhotonUtils.calculateDistanceToTargetMeters(
-                CAMERA_HEIGHT_METERS,
+                INTAKE_CAMERA_HEIGHT_METERS,
                 HUB_TARGET_HEIGHT_METERS,
-                CAMERA_PITCH_RADIANS,
+                INTAKE_CAMERA_PITCH_RADIANS,
+                Math.toRadians(target.getPitch())
+            );
+        SmartDashboard.putNumber("t_area", target.getArea());
+        SmartDashboard.putNumber("t_pitch", target.getPitch());
+        return distance;
+    }
+
+    public double getDistanceToShooterTarget(PhotonTrackedTarget target) {
+        if (!shooterHasTarget || target == null) {
+            return Double.NaN;
+        }
+
+        double distance = PhotonUtils.calculateDistanceToTargetMeters(
+                SHOOTER_CAMERA_HEIGHT_METERS,
+                HUB_TARGET_HEIGHT_METERS,
+                SHOOTER_CAMERA_PITCH_RADIANS,
                 Math.toRadians(target.getPitch())
             );
         SmartDashboard.putNumber("t_area", target.getArea());
@@ -122,16 +192,16 @@ public class VisionSubsystem extends SubsystemBase {
 
     public boolean InRange(double distanceThreshold, double distanceThresholdRange,
     double angleThreshold, double angleThresholdRange) {
-        if (!hasTarget) {
+        if (!intakeHasTarget) {
             return false;
         }
     
-        PhotonTrackedTarget bestTarget = getBestTarget();
+        PhotonTrackedTarget bestTarget = getBestIntakeTarget();
         if (bestTarget == null) {
             return false;
         }
 
-        double distanceToTarget  = getDistanceToTarget(bestTarget);
+        double distanceToTarget  = getDistanceToIntakeTarget(bestTarget);
         double angleToTarget = bestTarget.getYaw(); // Assuming yaw gives the angle
 
         // Check that the target is within the +/- range around the thresholds

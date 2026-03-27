@@ -20,7 +20,7 @@ import com.studica.frc.Navx;
 // import java.io.IOException;
 
 public class IMUSubsystem extends SubsystemBase {
-    private Navx navx;
+    private Navx navx = new Navx(0, 100); //CAN
     // private SimDeviceSim device;
 
     // Required to get different readings
@@ -33,7 +33,6 @@ public class IMUSubsystem extends SubsystemBase {
     
     public IMUSubsystem() {
         // Create NavX Object
-        navx = new Navx(0, 100); // CAN
         // navx = new Navx(Navx.Port.kUSB1); // USB 
     
         // Create Sim Object

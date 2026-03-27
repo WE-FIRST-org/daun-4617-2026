@@ -180,7 +180,7 @@ public class CANDriveSubsystem extends SubsystemBase {
     if (isInverted) {
       front = "Intake";
     } else {
-      front = "Battery";
+      front = "Shooter";
     }
     SmartDashboard.putString("Front is: ", front);
 

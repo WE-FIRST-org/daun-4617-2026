@@ -37,7 +37,7 @@ public class AimAndRangeCommand extends Command {
 
     @Override
     public void execute() {
-        PhotonPipelineResult result = m_vision.getLatestResult();
+        PhotonPipelineResult result = m_vision.getLatestIntakeResult();
 
         if (result == null || !result.hasTargets()) {
             m_drive.stop();
@@ -54,7 +54,7 @@ public class AimAndRangeCommand extends Command {
 
         SmartDashboard.putBoolean("AimAndRange/HasTarget", true);
 
-        double distance = m_vision.getDistanceToTarget(target); // meters (may be NaN)
+        double distance = m_vision.getDistanceToIntakeTarget(target); // meters (may be NaN)
         double angleDeg = target.getYaw(); // degrees
 
         // Defensive: ensure numeric distance

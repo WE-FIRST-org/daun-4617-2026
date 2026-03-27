@@ -67,7 +67,8 @@ public final class Constants {
     //make sure to change it back into 46.17 after logic implementation, access raspi's static ip address via "sudo nmcui" (Network Managemer Command line User Interface)
     //router ip address 10.TE.AM.1 (eg 10.46.17.1)
     // public static final String USB_CAMERA_NAME = "USB_Camera-10.46.17.42"; //VisionSubsystem.java MIT License text there
-    public static final String USB_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"; //VisionSubsystem.java MIT License text there
+    public static final String INTAKE_USB_CAMERA_NAME = "Microsoft_LifeCam_HD-3000"; //VisionSubsystem.java MIT License text there
+    public static final String SHOOTER_USB_CAMERA_NAME = "Microsoft_LifeCam_HD-3000 (1)"; //VisionSubsystem.java MIT License text there
 
     // April tag heights of game pieces
     public static final double HUB_TARGET_HEIGHT_METERS = 1.124;
@@ -76,9 +77,13 @@ public final class Constants {
     public static final double TRENCH_TARGET_HEIGHT_METERS = 0.889;
 
     // Camera height and pitch
-    public static final double CAMERA_HEIGHT_METERS = 0.45;
-    public static final double CAMERA_PITCH_DEGREES = 30;
-    public static final double CAMERA_PITCH_RADIANS = Math.toRadians(CAMERA_PITCH_DEGREES);
+    public static final double INTAKE_CAMERA_HEIGHT_METERS = 0.434;
+    public static final double INTAKE_CAMERA_PITCH_DEGREES = 30;
+    public static final double INTAKE_CAMERA_PITCH_RADIANS = Math.toRadians(INTAKE_CAMERA_PITCH_DEGREES);
+
+    public static final double SHOOTER_CAMERA_HEIGHT_METERS = 0.25;
+    public static final double SHOOTER_CAMERA_PITCH_DEGREES = 38;
+    public static final double SHOOTER_CAMERA_PITCH_RADIANS = Math.toRadians(INTAKE_CAMERA_PITCH_DEGREES);
 
     public static final double DISTANCE_GOAL_METERS = 0.1;
   }
