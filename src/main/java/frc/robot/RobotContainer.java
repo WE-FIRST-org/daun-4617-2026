@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+// import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import static frc.robot.Constants.OperatorConstants.*;
 
@@ -20,6 +20,7 @@ import frc.robot.commands.Intake;
 import frc.robot.commands.InvertDrive;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.commands.ResetSensors;
+import frc.robot.commands.RotateToAngle;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
 import frc.robot.subsystems.IMUSubsystem;
@@ -74,9 +75,14 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    driverController.rightTrigger(0.1).whileTrue(new AimAndRangeCommand(driveSubsystem, m_visionSubsystem));
+    driverController.leftTrigger(0.1).whileTrue(new AimAndRangeCommand(driveSubsystem, m_visionSubsystem));
     // Run invert once when the bumper is pressed (whileTrue schedules repeatedly)
     driverController.leftBumper().onTrue(new InvertDrive());
+
+  // rotate to relative headings: +180, -90, +90 degrees from current
+  driverController.y().onTrue(new RotateToAngle(driveSubsystem, imu, 180.0));
+  driverController.x().onTrue(new RotateToAngle(driveSubsystem, imu, -90.0));
+  driverController.b().onTrue(new RotateToAngle(driveSubsystem, imu, 90.0));
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
@@ -96,14 +102,14 @@ public class RobotContainer {
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
 
     // finding feedforward constant
-    driverController.y().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
-    driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
-    driverController.b().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kForward));
-    driverController.x().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
-    driverController.povUp().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
-    driverController.povDown().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
-    driverController.povRight().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kForward));
-    driverController.povLeft().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
+    // driverController.y().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kForward));
+    // driverController.a().whileTrue(driveSubsystem.sysIdQuasistaticLinear(Direction.kReverse));
+    // driverController.b().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kForward));
+    // driverController.x().whileTrue(driveSubsystem.sysIdDynamicLinear(Direction.kReverse));
+    // driverController.povUp().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kForward));
+    // driverController.povDown().whileTrue(driveSubsystem.sysIdQuasistaticAngular(Direction.kReverse));
+    // driverController.povRight().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kForward));
+    // driverController.povLeft().whileTrue(driveSubsystem.sysIdDynamicAngular(Direction.kReverse));
 
     driverController.start().onTrue(new ResetSensors(driveSubsystem, imu));
   }

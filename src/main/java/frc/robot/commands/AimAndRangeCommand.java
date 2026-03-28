@@ -65,8 +65,8 @@ public class AimAndRangeCommand extends Command {
         }
 
         // PID: measurement, setpoint
-        double rotationSpeed = turnFeedforward.calculate(0) + turnPID.calculate(angleDeg, 0.0); // turn to yaw=0
-        double forwardSpeed = driveFeedforward.calculate(DISTANCE_GOAL_METERS) + drivePID.calculate(distance, DISTANCE_GOAL_METERS);
+        double rotationSpeed = turnFeedforward.calculate(0.5) + turnPID.calculate(angleDeg, 0.0); // turn to yaw=0
+        double forwardSpeed = driveFeedforward.calculate(0.5) + drivePID.calculate(distance, DISTANCE_GOAL_METERS);
 
         // Clamp outputs to safe [-1,1] (or your motor input range)
         rotationSpeed = Math.max(-1.0, Math.min(1.0, rotationSpeed));

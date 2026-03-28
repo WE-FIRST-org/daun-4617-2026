@@ -141,7 +141,7 @@ public class CANDriveSubsystem extends SubsystemBase {
             .voltage(
               m_appliedVoltage.mut_replace(
                 leftLeader.get() * RobotController.getBatteryVoltage(), Volts))
-            .angularPosition(m_angle.mut_replace(leftLeader.getEncoder().getPosition(), Degrees))
+            .angularPosition(m_angle.mut_replace(imu.getYaw(), Degrees))
             .angularVelocity(
               m_angularVelocity.mut_replace(imu.getAngularVelZ(), DegreesPerSecond));
           
@@ -149,7 +149,7 @@ public class CANDriveSubsystem extends SubsystemBase {
             .voltage(
               m_appliedVoltage.mut_replace(
                 rightLeader.get() * RobotController.getBatteryVoltage(), Volts))
-            .angularPosition(m_angle.mut_replace(rightLeader.getEncoder().getPosition(), Degrees))
+            .angularPosition(m_angle.mut_replace(imu.getYaw(), Degrees))
             .angularVelocity(
               m_angularVelocity.mut_replace(imu.getAngularVelZ(), DegreesPerSecond));
         },
@@ -234,7 +234,7 @@ public class CANDriveSubsystem extends SubsystemBase {
    */
   public void stop() {
     drive.stopMotor();
-  }
+  }    
 
   public void resetEnconders() {
     leftLeader.getEncoder().setPosition(0);

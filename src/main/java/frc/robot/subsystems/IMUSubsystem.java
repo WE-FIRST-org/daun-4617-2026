@@ -1,5 +1,12 @@
 package frc.robot.subsystems; 
 
+// import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.math.geometry.Quaternion;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.LinearAcceleration;
+
 import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
@@ -7,20 +14,12 @@ import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
 
 import com.studica.frc.Navx;
 
-import edu.wpi.first.math.geometry.Quaternion;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.LinearAcceleration;
-import edu.wpi.first.wpilibj.Timer;
-// import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 // import java.io.BufferedWriter;
 // import java.io.FileWriter;
 // import java.io.IOException;
 
 public class IMUSubsystem extends SubsystemBase {
-    private Navx navx = new Navx(0, 100); //CAN
+    private Navx navx = new Navx(0, 100); // CAN
     // private SimDeviceSim device;
 
     // Required to get different readings
@@ -32,7 +31,6 @@ public class IMUSubsystem extends SubsystemBase {
     // private int error = navx.getCompass(mag);
     
     public IMUSubsystem() {
-        // Create NavX Object
         // navx = new Navx(Navx.Port.kUSB1); // USB 
     
         // Create Sim Object
@@ -59,15 +57,6 @@ public class IMUSubsystem extends SubsystemBase {
     
         // Add reset yaw btn to dashboard
         SmartDashboard.putBoolean("Reset Yaw", false);
-
-        // Initialize integration state
-        lastIntegrateTime = Timer.getFPGATimestamp();
-        try {
-            AngularVelocity[] av = navx.getAngularVel();
-            lastOmegaRad = Math.toRadians(av[2].in(DegreesPerSecond));
-        } catch (Exception e) {
-            lastOmegaRad = 0.0;
-        }
     }
     
     @Override
@@ -91,11 +80,10 @@ public class IMUSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("q6_y:", quat.getY());
         SmartDashboard.putNumber("q6_z:", quat.getZ());
     
-        // Angular Velocity (refresh from sensor each loop)
-        AngularVelocity[] av = navx.getAngularVel();
-        SmartDashboard.putNumber("w_x:", av[0].in(DegreesPerSecond)); //rol
-        SmartDashboard.putNumber("w_y:", av[1].in(DegreesPerSecond)); //pitch
-        SmartDashboard.putNumber("w_z:", av[2].in(DegreesPerSecond)); //yaw
+        // Angular Velocity
+        SmartDashboard.putNumber("w_x:", omega[0].in(DegreesPerSecond));
+        SmartDashboard.putNumber("w_y:", omega[1].in(DegreesPerSecond));
+        SmartDashboard.putNumber("w_z:", omega[2].in(DegreesPerSecond)); 
     
         // 9-axis quaternion 
         SmartDashboard.putNumber("q9_w:", quat9.getW());
@@ -122,48 +110,11 @@ public class IMUSubsystem extends SubsystemBase {
           navx.resetYaw();
           SmartDashboard.putBoolean("Reset Yaw", false);
         }
-                // Integrate gyro Z (degrees/sec -> rad/sec) using trapezoidal rule
-                double now = Timer.getFPGATimestamp();
-                double dt = now - lastIntegrateTime;
-                try {
-                    double omegaDegPerSec = av[2].in(DegreesPerSecond);
-                    double omegaRad = Math.toRadians(omegaDegPerSec);
-                    // trapezoidal integration
-                    integratedYawRad += 0.5 * (lastOmegaRad + omegaRad) * dt;
-                    lastOmegaRad = omegaRad;
-                } catch (Exception e) {
-                    // ignore integration if sensor read fails
-                }
-                lastIntegrateTime = now;
-
-                SmartDashboard.putNumber("integratedYawRad", integratedYawRad);
     }
-
-        // Integration state for manual integration of angular velocity
-        private double integratedYawRad = 0.0;
-        private double lastIntegrateTime = 0.0;
-        private double lastOmegaRad = 0.0;
 
     public double getYaw() {
         return navx.getYaw().in(Degrees);
     }
-
-        /** Returns the integrated yaw (radians) computed from gyro angular velocity samples. */
-        public double getIntegratedYawRad() {
-            return integratedYawRad;
-        }
-
-        /** Reset the manual integrated yaw to zero and restart timing. */
-        public void resetIntegratedYaw() {
-            integratedYawRad = 0.0;
-            lastIntegrateTime = Timer.getFPGATimestamp();
-            try {
-                AngularVelocity[] av = navx.getAngularVel();
-                lastOmegaRad = Math.toRadians(av[2].in(DegreesPerSecond));
-            } catch (Exception e) {
-                lastOmegaRad = 0.0;
-            }
-        }
 
     public double getPitch() {
         return navx.getPitch().in(Degrees);
@@ -194,18 +145,15 @@ public class IMUSubsystem extends SubsystemBase {
     }
 
     public double getAngularVelX() {
-        //return omega[0].in(DegreesPerSecond);
-        return navx.getAngularVel()[0].in(DegreesPerSecond);
+        return omega[0].in(DegreesPerSecond);
     }
 
     public double getAngularVelY() {
-        //return omega[1].in(DegreesPerSecond);
-        return navx.getAngularVel()[1].in(DegreesPerSecond);
+        return omega[1].in(DegreesPerSecond);
     }
 
     public double getAngularVelZ() {
-        //return omega[2].in(DegreesPerSecond);
-        return navx.getAngularVel()[2].in(DegreesPerSecond);
+        return omega[2].in(DegreesPerSecond);
     }
 
     public double getQ9W() {
@@ -256,10 +204,7 @@ public class IMUSubsystem extends SubsystemBase {
         return navx.getTemperature().in(Celsius);
     }
 
-    /**
-     * Resets the yaw to 0 degrees
-     */
-    public void resetYaw(){
+    public void resetYaw() {
         navx.resetYaw();
     }
 }

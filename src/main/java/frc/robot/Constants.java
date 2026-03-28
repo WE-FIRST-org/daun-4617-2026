@@ -45,7 +45,7 @@ public final class Constants {
     public static final double INTAKING_FEEDER_VOLTAGE = 12;
     public static final double INTAKING_INTAKE_VOLTAGE = -10;
     public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
-    public static final double LAUNCHING_LAUNCHER_VOLTAGE = -10.6;
+    public static final double LAUNCHING_LAUNCHER_VOLTAGE = -8.17; // kitbot template: -10.21
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 3; 
   }
@@ -58,8 +58,11 @@ public final class Constants {
 
     // This value is multiplied by the joystick value when rotating the robot to
     // help avoid turning too fast and beign difficult to control
-    public static final double DRIVE_SCALING = .8;
-    public static final double ROTATION_SCALING = .8;
+    public static final double DRIVE_SCALING = .64;
+    public static final double ROTATION_SCALING = .52;
+    // Maximum boost multiplier applied to forward speed when the trigger is fully pressed.
+    // Effective forward scaling = DRIVE_SCALING * (1 + trigger*(DRIVE_BOOST_FACTOR-1))
+    public static final double DRIVE_BOOST_FACTOR = 1.5;
   }
 
   public static final class VisionConstants {
@@ -98,12 +101,16 @@ public final class Constants {
     public static final double DRIVE_I = 0;
     public static final double DRIVE_D = 0;
 
-    public static final double TURN_kS = 0;
-    public static final double TURN_kV = 0;
-    public static final double TURN_kA = 0;
+    public static final double TURN_kS = 0.2;
+    public static final double TURN_kV = 2;
+    public static final double TURN_kA = 0.2;
+  // Velocity profiling for rotational feedforward (deg error -> deg/s desired)
+  // desiredVelDegPerSec = clamp(errorDeg * TURN_VEL_SCALE, -TURN_MAX_VEL_DEG_PER_SEC, TURN_MAX_VEL_DEG_PER_SEC)
+  public static final double TURN_VEL_SCALE = 2.0; // deg/s per degree of error
+  public static final double TURN_MAX_VEL_DEG_PER_SEC = 180.0; // clamp max angular speed
 
-    public static final double DRIVE_kS = 0;
-    public static final double DRIVE_kV = 0;
-    public static final double DRIVE_kA = 0;
+    public static final double DRIVE_kS = 0.2;
+    public static final double DRIVE_kV = 2;
+    public static final double DRIVE_kA = 0.1;
   }
 }
