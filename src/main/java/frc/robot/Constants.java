@@ -43,7 +43,7 @@ public final class Constants {
     // based on exact robot construction.
     // See the Software Guide for tuning information
     public static final double INTAKING_FEEDER_VOLTAGE = 12;
-    public static final double INTAKING_INTAKE_VOLTAGE = -10;
+    public static final double INTAKING_INTAKE_VOLTAGE = -8;
     public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = -8.17; // kitbot template: -10.21
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
@@ -112,5 +112,9 @@ public final class Constants {
     public static final double DRIVE_kS = 0.2;
     public static final double DRIVE_kV = 2;
     public static final double DRIVE_kA = 0.1;
+    // Velocity profiling for linear feedforward (m error -> m/s desired)
+    // desiredVelMPerS = clamp(errorM * DRIVE_VEL_SCALE, -DRIVE_MAX_VEL_M_PER_S, DRIVE_MAX_VEL_M_PER_S)
+    public static final double DRIVE_VEL_SCALE = 1.0; // m/s per meter of error
+    public static final double DRIVE_MAX_VEL_M_PER_S = 3.0; // clamp max linear speed
   }
 }

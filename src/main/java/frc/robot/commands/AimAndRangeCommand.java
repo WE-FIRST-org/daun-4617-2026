@@ -5,6 +5,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
@@ -26,7 +27,8 @@ public class AimAndRangeCommand extends Command {
     public AimAndRangeCommand(CANDriveSubsystem drive, VisionSubsystem vision) {
         m_drive = drive;
         m_vision = vision;
-        addRequirements(m_drive, m_vision); // Interrupts other drive commands
+        // Only require drive; vision does not need to be interrupting
+        addRequirements(m_drive); // Interrupts other drive commands
     }
 
     @Override
@@ -64,9 +66,28 @@ public class AimAndRangeCommand extends Command {
             return;
         }
 
-        // PID: measurement, setpoint
-        double rotationSpeed = turnFeedforward.calculate(0.5) + turnPID.calculate(angleDeg, 0.0); // turn to yaw=0
-        double forwardSpeed = driveFeedforward.calculate(0.5) + drivePID.calculate(distance, DISTANCE_GOAL_METERS);
+        // PID measurement/setpoint
+        double pidTurn = turnPID.calculate(angleDeg, 0.0); // want yaw == 0
+        double pidDrive = drivePID.calculate(distance, DISTANCE_GOAL_METERS);
+
+        // --- Turn feedforward ---
+        // Map angular error (deg) to desired angular velocity (deg/s)
+        double errorDeg = Math.abs(angleDeg); // angleDeg is yaw to target; we want magnitude toward 0
+        double desiredAngVelDegPerSec = Math.signum(angleDeg) * Math.max(-TURN_MAX_VEL_DEG_PER_SEC,
+            Math.min(TURN_MAX_VEL_DEG_PER_SEC, errorDeg * TURN_VEL_SCALE));
+        double desiredAngVelRadPerSec = Math.toRadians(desiredAngVelDegPerSec);
+        double ffTurnVolts = turnFeedforward.calculate(desiredAngVelRadPerSec);
+        double ffTurn = ffTurnVolts / Math.max(0.001, RobotController.getBatteryVoltage());
+
+        // --- Drive feedforward ---
+        double errorDist = distance - DISTANCE_GOAL_METERS;
+        double desiredLinVel = Math.max(-DRIVE_MAX_VEL_M_PER_S,
+            Math.min(DRIVE_MAX_VEL_M_PER_S, errorDist * DRIVE_VEL_SCALE));
+        double ffDriveVolts = driveFeedforward.calculate(desiredLinVel);
+        double ffDrive = ffDriveVolts / Math.max(0.001, RobotController.getBatteryVoltage());
+
+        double rotationSpeed = pidTurn + ffTurn;
+        double forwardSpeed = pidDrive + ffDrive;
 
         // Clamp outputs to safe [-1,1] (or your motor input range)
         rotationSpeed = Math.max(-1.0, Math.min(1.0, rotationSpeed));

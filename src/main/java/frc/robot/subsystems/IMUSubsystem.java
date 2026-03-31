@@ -19,7 +19,7 @@ import com.studica.frc.Navx;
 // import java.io.IOException;
 
 public class IMUSubsystem extends SubsystemBase {
-    private Navx navx = new Navx(0, 100); // CAN
+    private Navx navx = new Navx(0, 100);
     // private SimDeviceSim device;
 
     // Required to get different readings
@@ -202,9 +202,5 @@ public class IMUSubsystem extends SubsystemBase {
 
     public double getTemp() {
         return navx.getTemperature().in(Celsius);
-    }
-
-    public void resetYaw() {
-        navx.resetYaw();
     }
 }

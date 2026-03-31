@@ -237,8 +237,19 @@ public class CANDriveSubsystem extends SubsystemBase {
   }    
 
   public void resetEnconders() {
+    // kept for compatibility (note: original typo)
     leftLeader.getEncoder().setPosition(0);
     rightLeader.getEncoder().setPosition(0);
+  }
+
+  /** Correctly spelled wrapper for resetting the drive encoders. */
+  public void resetEncoders() {
+    resetEnconders();
+  }
+
+  /** Returns the average linear position of the left and right encoders, in meters. */
+  public double getAverageDistanceMeters() {
+    return (leftLeader.getEncoder().getPosition() + rightLeader.getEncoder().getPosition()) / 2.0;
   }
 
 }

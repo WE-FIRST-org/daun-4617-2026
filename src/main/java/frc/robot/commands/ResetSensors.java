@@ -23,6 +23,6 @@ public class ResetSensors extends Command {
   @Override 
   public void execute() {
     driveSystem.resetEnconders();
-    imu.resetYaw();
+    // imu.resetYaw();
   }  
 }
