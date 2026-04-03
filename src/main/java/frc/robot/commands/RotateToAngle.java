@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.IMUSubsystem;
@@ -43,7 +44,7 @@ public class RotateToAngle extends Command {
     currAngle = imuSubsystem.getYaw();
     targetAngle = currAngle + angleOffsetDeg;
     // configure tolerances (degrees)
-    turnPID.setTolerance(2.0); // 2 degrees tolerance
+    // turnPID.setTolerance(2.0); // 2 degrees tolerance
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,8 +53,9 @@ public class RotateToAngle extends Command {
   @Override
   public void execute() {
     // read live angle
-    currAngle = imuSubsystem.getYaw();
-    double pidOutput = turnPID.calculate(currAngle, targetAngle);
+    
+    currAngle = imuSubsystem.getYawInRad();
+    double pidOutput = turnPID.calculate(currAngle, Math.toRadians(targetAngle));
 
     // --- FEEDFORWARD SECTION COMMENTED OUT ---
     // // compute shortest angular error (deg) and desired angular velocity (deg/s)
@@ -78,6 +80,7 @@ public class RotateToAngle extends Command {
     
     // --- PID ONLY ---
     double rotationSpeed = pidOutput;
+    SmartDashboard.putNumber("Rotation Speed From RTA",rotationSpeed);
     rotationSpeed = Math.max(-1.0, Math.min(1.0, rotationSpeed));
     driveSubsystem.driveArcade(0, rotationSpeed);
   }

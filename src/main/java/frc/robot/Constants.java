@@ -42,9 +42,9 @@ public final class Constants {
     // Voltage values for various fuel operations. These values may need to be tuned
     // based on exact robot construction.
     // See the Software Guide for tuning information
-    public static final double INTAKING_FEEDER_VOLTAGE = 12;
+    public static final double INTAKING_FEEDER_VOLTAGE = 8;
     public static final double INTAKING_INTAKE_VOLTAGE = -8;
-    public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
+    public static final double LAUNCHING_FEEDER_VOLTAGE = -9;
     public static final double LAUNCHING_LAUNCHER_VOLTAGE = -8.17; // kitbot template: -10.21
     public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
     public static final double SPIN_UP_SECONDS = 3; 
@@ -59,7 +59,7 @@ public final class Constants {
     // This value is multiplied by the joystick value when rotating the robot to
     // help avoid turning too fast and beign difficult to control
     public static final double DRIVE_SCALING = .64;
-    public static final double ROTATION_SCALING = .52;
+    public static final double ROTATION_SCALING = .45;
     // Maximum boost multiplier applied to forward speed when the trigger is fully pressed.
     // Effective forward scaling = DRIVE_SCALING * (1 + trigger*(DRIVE_BOOST_FACTOR-1))
     public static final double DRIVE_BOOST_FACTOR = 1.5;

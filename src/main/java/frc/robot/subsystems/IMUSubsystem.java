@@ -11,6 +11,7 @@ import static edu.wpi.first.units.Units.Celsius;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Radian;
 
 import com.studica.frc.Navx;
 
@@ -112,8 +113,15 @@ public class IMUSubsystem extends SubsystemBase {
         }
     }
 
-    public double getYaw() {
+    public double getYawInDeg() {
         return navx.getYaw().in(Degrees);
+    }
+
+    public double getYawInRad(){
+        return navx.getYaw().in(Radian);//note this has no difference than Radians ... they are aliases
+    }
+    public double getYaw(){
+        return getYawInDeg();
     }
 
     public double getPitch() {

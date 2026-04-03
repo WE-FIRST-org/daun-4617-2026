@@ -20,6 +20,7 @@ import frc.robot.commands.Intake;
 import frc.robot.commands.InvertDrive;
 import frc.robot.commands.LaunchSequence;
 import frc.robot.commands.ResetSensors;
+import frc.robot.commands.RotateToAngle;
 // import frc.robot.commands.RotateToAngle;
 import frc.robot.subsystems.CANDriveSubsystem;
 import frc.robot.subsystems.CANFuelSubsystem;
@@ -82,7 +83,7 @@ public class RobotContainer {
   // rotate to relative headings: +180, -90, +90 degrees from current
   // driverController.y().onTrue(new RotateToAngle(driveSubsystem, imu, 180.0));
   // driverController.x().onTrue(new RotateToAngle(driveSubsystem, imu, -90.0));
-  // driverController.b().onTrue(new RotateToAngle(driveSubsystem, imu, 90.0));
+   driverController.b().onTrue(new RotateToAngle(driveSubsystem, imu, 90.0));
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
