@@ -58,8 +58,10 @@ public final class Constants {
 
     // This value is multiplied by the joystick value when rotating the robot to
     // help avoid turning too fast and beign difficult to control
-    public static final double DRIVE_SCALING = .64;
-    public static final double ROTATION_SCALING = .45;
+    public static final double FEED_DRIVE_SCALING = .7;
+    public static final double FEED_ROTATION_SCALING = .5;
+    public static final double DEFENSE_DRIVE_SCALING = .85;
+    public static final double DEFENSE_ROTATION_SCALING = .6;
     // Maximum boost multiplier applied to forward speed when the trigger is fully pressed.
     // Effective forward scaling = DRIVE_SCALING * (1 + trigger*(DRIVE_BOOST_FACTOR-1))
     public static final double DRIVE_BOOST_FACTOR = 1.5;

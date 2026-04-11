@@ -124,6 +124,10 @@ public class IMUSubsystem extends SubsystemBase {
         return getYawInDeg();
     }
 
+    public void resetYaw() {
+        navx.resetYaw();
+    }
+
     public double getPitch() {
         return navx.getPitch().in(Degrees);
     }

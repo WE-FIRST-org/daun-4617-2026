@@ -9,6 +9,7 @@ import static frc.robot.Constants.OperatorConstants.*;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.CANDriveSubsystem;
+import frc.robot.subsystems.IMUSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Drive extends Command {
@@ -16,11 +17,14 @@ public class Drive extends Command {
   CANDriveSubsystem driveSubsystem;
   CommandXboxController controller;
 
-  public Drive(CANDriveSubsystem driveSystem, CommandXboxController driverController) {
+  IMUSubsystem imu = new IMUSubsystem();
+
+  public Drive(CANDriveSubsystem driveSystem, CommandXboxController driverController, IMUSubsystem iimmuu) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(driveSystem);
     driveSubsystem = driveSystem;
     controller = driverController;
+    imu = iimmuu;
   }
 
   // Called when the command is initially scheduled.
@@ -36,18 +40,47 @@ public class Drive extends Command {
   @Override
   public void execute() {
     boolean isInverted = InvertDrive.getInvertedStatus();
+    boolean OgDrive = ChangeDrive.isOriginalDrive();
     
     double trigger = controller.getRightTriggerAxis();
-    double forwardScaling = DRIVE_SCALING * (1.0 + trigger * (DRIVE_BOOST_FACTOR - 1.0));
 
-    double forward = controller.getLeftY() * forwardScaling;
-    double rotation = controller.getRightX() * ROTATION_SCALING;
+    double forwardScaling;
+    double forward;
+    double rotation;
 
-    if (isInverted) {
-      driveSubsystem.driveArcade(forward, rotation);
+    if (OgDrive) {
+      forwardScaling = FEED_DRIVE_SCALING * (1.0 + trigger * (DRIVE_BOOST_FACTOR - 1.0));
+      forward = controller.getLeftY() * forwardScaling;
+      rotation = controller.getRightX() * FEED_ROTATION_SCALING;
     } else {
-      driveSubsystem.driveArcade(-forward, rotation);
+      forwardScaling = DEFENSE_DRIVE_SCALING * (1.0 + trigger * (DRIVE_BOOST_FACTOR - 1.0));
+      forward = controller.getLeftY() * forwardScaling;
+      rotation = controller.getRightX() * DEFENSE_ROTATION_SCALING;
     }
+  
+    // if (OgDrive) {
+        if (isInverted) {
+        driveSubsystem.driveArcade(forward, rotation);
+      } else {
+        driveSubsystem.driveArcade(-forward, rotation);
+      }
+    // } else {
+    //   if (isInverted) {
+    //     if (imu.getYaw() >= -90 && imu.getYaw() <= 90) {
+    //       driveSubsystem.driveArcade(forward, rotation);
+    //     } else if (imu.getYaw() < -90 || imu.getYaw() > 90) {
+    //       driveSubsystem.driveArcade(-forward, -rotation);
+    //     }
+    //   } else {
+    //     if (imu.getYaw() >= -90 && imu.getYaw() <= 90) {
+    //       driveSubsystem.driveArcade(-forward, rotation);
+    //     } else if (imu.getYaw() < -90 || imu.getYaw() > 90) {
+    //       driveSubsystem.driveArcade(forward, -rotation);
+    //     }
+    //   }
+    // }
+
+    
     
   }
 

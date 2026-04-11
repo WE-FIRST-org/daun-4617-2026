@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import static frc.robot.Constants.OperatorConstants.*;
 
 import frc.robot.commands.AimAndRangeCommand;
+import frc.robot.commands.ChangeDrive;
 import frc.robot.commands.Drive;
 import frc.robot.commands.Eject;
 import frc.robot.commands.ExampleAuto;
@@ -63,7 +64,8 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem, agitatorSubsystem));
+    imu.resetYaw();
   }
 
   /**
@@ -81,11 +83,12 @@ public class RobotContainer {
     driverController.leftTrigger(0.1).whileTrue(new AimAndRangeCommand(driveSubsystem, m_visionSubsystem));
     // Run invert once when the bumper is pressed (whileTrue schedules repeatedly)
     driverController.leftBumper().onTrue(new InvertDrive());
+    driverController.rightBumper().onTrue(new ChangeDrive());
 
   // rotate to relative headings: +180, -90, +90 degrees from current
   // driverController.y().onTrue(new RotateToAngle(driveSubsystem, imu, 180.0));
   // driverController.x().onTrue(new RotateToAngle(driveSubsystem, imu, -90.0));
-   driverController.b().onTrue(new RotateToAngle(driveSubsystem, imu, 90.0));
+    // driverController.b().onTrue(new RotateToAngle(driveSubsystem, imu, 90.0));
 
     // While the left bumper on operator controller is held, intake Fuel
     operatorController.leftBumper().whileTrue(new Intake(fuelSubsystem));
@@ -103,7 +106,8 @@ public class RobotContainer {
     // controller. The Y axis of the controller is inverted so that pushing the
     // stick away from you (a negative value) drives the robot forwards (a positive
     // value)
-    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController));
+
+    driveSubsystem.setDefaultCommand(new Drive(driveSubsystem, driverController, imu));
     fuelSubsystem.setDefaultCommand(fuelSubsystem.run(() -> fuelSubsystem.stop()));
     agitatorSubsystem.setDefaultCommand(agitatorSubsystem.oscilllateCommand());
 
