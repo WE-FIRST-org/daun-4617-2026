@@ -22,7 +22,7 @@ public class ResetSensors extends Command {
 
   @Override 
   public void execute() {
-    driveSystem.resetEnconders();
-    // imu.resetYaw();
+    driveSystem.resetEncoders();
+    imu.resetYaw();
   }  
 }

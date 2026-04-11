@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ChangeDrive;
 import frc.robot.commands.InvertDrive;
 import static frc.robot.Constants.DriveConstants.*;
 import static edu.wpi.first.units.Units.Degrees;
@@ -176,13 +177,23 @@ public class CANDriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     boolean isInverted = InvertDrive.getInvertedStatus();
+    boolean ogDrive = ChangeDrive.isOriginalDrive();
+
     String front;
     if (isInverted) {
       front = "Intake";
     } else {
       front = "Shooter";
     }
+
+    String driveType;
+    if (ogDrive) {
+      driveType = "Feed";
+    } else {
+      driveType = "Defense";
+    }
     SmartDashboard.putString("Front is: ", front);
+    SmartDashboard.putString("Drive Type", driveType);
 
     // Publish commanded inputs
     SmartDashboard.putNumber("drive/lastXSpeed", lastXSpeed);
@@ -236,15 +247,10 @@ public class CANDriveSubsystem extends SubsystemBase {
     drive.stopMotor();
   }    
 
-  public void resetEnconders() {
+  public void resetEncoders() {
     // kept for compatibility (note: original typo)
     leftLeader.getEncoder().setPosition(0);
     rightLeader.getEncoder().setPosition(0);
-  }
-
-  /** Correctly spelled wrapper for resetting the drive encoders. */
-  public void resetEncoders() {
-    resetEnconders();
   }
 
   /** Returns the average linear position of the left and right encoders, in meters. */
