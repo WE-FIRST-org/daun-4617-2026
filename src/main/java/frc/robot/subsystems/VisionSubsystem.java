@@ -150,6 +150,9 @@ public class VisionSubsystem extends SubsystemBase {
         }
     }
 
+    public int getTargetID(PhotonTrackedTarget target) {
+        return target.getFiducialId();
+    }
     public boolean getIntakeHasTarget() {
         return intakeHasTarget; // Returns whether or not a target was found
     }

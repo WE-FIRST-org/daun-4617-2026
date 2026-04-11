@@ -60,7 +60,8 @@ public class RobotContainer {
     // Set the options to show up in the Dashboard for selecting auto modes. If you
     // add additional auto modes you can add additional lines here with
     // autoChooser.addOption
-    autoChooser.setDefaultOption("Autonomous", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.setDefaultOption("ScanForTag", new ExampleAuto(driveSubsystem, fuelSubsystem));
+    autoChooser.addOption("LaunchSequence", new LaunchSequence(fuelSubsystem));
   }
 
   /**
@@ -116,11 +117,15 @@ public class RobotContainer {
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
+   * This functions is run at each cycle during the autonomous period. 
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return autoChooser.getSelected();
+    //Get status of the robot, then based on the status of the robot, return the auto command
+    double launcher_speed = fuelSubsystem.getLauncherSpeed();
+    int shooterApril_tag = m_visionSubsystem.getBestShooterTarget().getFiducialId();
+    
+    
+    return null;
   }
 }
